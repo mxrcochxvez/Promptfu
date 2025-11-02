@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { createUser } from '../db/auth-queries'
-import { generateToken } from '../lib/auth'
+import { createUser } from '../../db/auth-queries'
+import { generateToken } from '../auth'
 
 const signupServerFn = createServerFn({
   method: 'POST',

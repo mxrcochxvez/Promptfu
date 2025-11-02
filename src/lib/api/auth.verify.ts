@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { verifyToken } from '../lib/auth'
-import { getUserById } from '../db/auth-queries'
+import { verifyToken } from '../auth'
+import { getUserById } from '../../db/auth-queries'
 
 const verifyServerFn = createServerFn({
   method: 'POST',

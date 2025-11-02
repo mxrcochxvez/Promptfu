@@ -14,7 +14,6 @@ import { Route as SetupAdminRouteImport } from './routes/setup-admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
@@ -64,11 +63,6 @@ const DashboardRoute = DashboardRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoWorkosRoute = DemoWorkosRouteImport.update({
-  id: '/demo/workos',
-  path: '/demo/workos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -214,7 +208,6 @@ export interface FileRoutesByFullPath {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin/classes/create': typeof AdminClassesCreateRoute
   '/admin/users/create': typeof AdminUsersCreateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -247,7 +240,6 @@ export interface FileRoutesByTo {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin/classes/create': typeof AdminClassesCreateRoute
   '/admin/users/create': typeof AdminUsersCreateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -281,7 +273,6 @@ export interface FileRoutesById {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin/classes/create': typeof AdminClassesCreateRoute
   '/admin/users/create': typeof AdminUsersCreateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -316,7 +307,6 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin/classes/create'
     | '/admin/users/create'
     | '/demo/api/names'
@@ -349,7 +339,6 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin/classes/create'
     | '/admin/users/create'
     | '/demo/api/names'
@@ -382,7 +371,6 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin/classes/create'
     | '/admin/users/create'
     | '/demo/api/names'
@@ -416,7 +404,6 @@ export interface RootRouteChildren {
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoWorkosRoute: typeof DemoWorkosRoute
   AdminClassesCreateRoute: typeof AdminClassesCreateRoute
   AdminUsersCreateRoute: typeof AdminUsersCreateRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
@@ -473,13 +460,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/workos': {
-      id: '/demo/workos'
-      path: '/demo/workos'
-      fullPath: '/demo/workos'
-      preLoaderRoute: typeof DemoWorkosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -684,7 +664,6 @@ const rootRouteChildren: RootRouteChildren = {
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoWorkosRoute: DemoWorkosRoute,
   AdminClassesCreateRoute: AdminClassesCreateRoute,
   AdminUsersCreateRoute: AdminUsersCreateRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,

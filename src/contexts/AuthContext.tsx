@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       // Verify token with server function
-      const { verifyServerFn } = await import('../routes/api.auth.verify')
+      const { verifyServerFn } = await import('../lib/api/auth.verify')
       const result = await verifyServerFn({ data: token })
 
       if (result.success && result.user) {
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function login(email: string, password: string) {
-    const { loginServerFn } = await import('../routes/api.auth.login')
+    const { loginServerFn } = await import('../lib/api/auth.login')
     const result = await loginServerFn({ data: { email, password } })
 
     if (!result.success) {
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     firstName?: string,
     lastName?: string
   ) {
-    const { signupServerFn } = await import('../routes/api.auth.signup')
+    const { signupServerFn } = await import('../lib/api/auth.signup')
     const result = await signupServerFn({
       data: { email, password, firstName, lastName },
     })
@@ -120,7 +120,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function logout() {
     try {
-      const { logoutServerFn } = await import('../routes/api.auth.logout')
+      const { logoutServerFn } = await import('../lib/api/auth.logout')
       await logoutServerFn()
     } catch (error) {
       console.error('Logout request failed:', error)
