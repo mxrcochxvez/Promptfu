@@ -221,7 +221,7 @@ function UnitView() {
             <button
               onClick={handleComplete}
               disabled={completeMutation.isPending}
-              className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <CheckCircle2 className="w-5 h-5" />
               {completeMutation.isPending ? 'Marking complete...' : 'Mark as Complete'}
@@ -231,7 +231,7 @@ function UnitView() {
 
         {isCompleted && (
           <div className="mb-6 flex justify-center">
-            <div className="px-6 py-3 bg-green-500/20 border border-green-500 text-green-400 rounded-lg flex items-center gap-2">
+            <div className="px-6 py-3 bg-olive-500/20 border border-olive-500 text-olive-400 rounded-lg flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
               Completed
             </div>

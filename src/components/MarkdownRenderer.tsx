@@ -12,7 +12,7 @@ export default function MarkdownRenderer({
   className = '',
 }: MarkdownRendererProps) {
   return (
-    <div className={`prose prose-invert max-w-none ${className}`}>
+    <div className={`prose prose-invert max-w-none markdown-content ${className}`}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
         {content}
       </ReactMarkdown>
