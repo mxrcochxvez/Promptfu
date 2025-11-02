@@ -125,6 +125,25 @@ export async function getAvailableClasses(userId: number) {
     .orderBy(desc(classes.createdAt))
 }
 
+// Get all classes publicly (no auth required) with content check
+export async function getAllClassesWithContentCheck() {
+  const allClasses = await db.select().from(classes).orderBy(desc(classes.createdAt))
+  
+  // Get unit and test counts for each class to determine if coming soon
+  const classesWithContent = await Promise.all(
+    allClasses.map(async (classItem) => {
+      const units = await getUnitsByClassId(classItem.id)
+      const tests = await getTestsByClassId(classItem.id)
+      return {
+        ...classItem,
+        hasContent: units.length > 0 || tests.length > 0,
+      }
+    })
+  )
+  
+  return classesWithContent
+}
+
 // Lesson completion queries
 export async function isLessonCompleted(userId: number, lessonId: number) {
   const result = await db

@@ -40,7 +40,19 @@ const getAvailableClassesForUser = createServerFn({
     if (!data) return { classes: [] }
 
     const classes = await getAvailableClasses(data)
-    return { classes }
+    // Add hasContent check for each class
+    const classesWithContent = await Promise.all(
+      classes.map(async (classItem) => {
+        const { getUnitsByClassId, getTestsByClassId } = await import('../db/queries')
+        const units = await getUnitsByClassId(classItem.id)
+        const tests = await getTestsByClassId(classItem.id)
+        return {
+          ...classItem,
+          hasContent: units.length > 0 || tests.length > 0,
+        }
+      })
+    )
+    return { classes: classesWithContent }
   })
 
 export const Route = createFileRoute('/dashboard')({
@@ -182,16 +194,21 @@ function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAvailable.map((classItem) => (
-                <ClassCard
-                  key={classItem.id}
-                  classId={classItem.id}
-                  title={classItem.title}
-                  description={classItem.description}
-                  thumbnailUrl={classItem.thumbnailUrl}
-                  isEnrolled={false}
-                />
-              ))}
+              {filteredAvailable.map((classItem: any) => {
+                // Check if coming soon (no units or tests)
+                const isComingSoon = !classItem.hasContent
+                return (
+                  <ClassCard
+                    key={classItem.id}
+                    classId={classItem.id}
+                    title={classItem.title}
+                    description={classItem.description}
+                    thumbnailUrl={classItem.thumbnailUrl}
+                    isEnrolled={false}
+                    isComingSoon={isComingSoon}
+                  />
+                )
+              })}
             </div>
           )}
         </div>

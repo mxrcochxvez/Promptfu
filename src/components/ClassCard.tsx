@@ -9,6 +9,7 @@ interface ClassCardProps {
   thumbnailUrl?: string | null
   progress?: number // 0-100, optional
   isEnrolled?: boolean
+  isComingSoon?: boolean
 }
 
 export default function ClassCard({
@@ -18,6 +19,7 @@ export default function ClassCard({
   thumbnailUrl,
   progress,
   isEnrolled = false,
+  isComingSoon = false,
 }: ClassCardProps) {
   return (
     <Link
@@ -25,7 +27,14 @@ export default function ClassCard({
       params={{ classId: classId.toString() }}
       className="block"
     >
-      <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-olive-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-olive-500/10">
+      <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-olive-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-olive-500/10 relative">
+        {isComingSoon && (
+          <div className="absolute top-3 right-3 z-10">
+            <div className="px-3 py-1 bg-olive-500/20 border border-olive-500 rounded-full">
+              <span className="text-olive-400 text-xs font-semibold">Coming Soon</span>
+            </div>
+          </div>
+        )}
         {thumbnailUrl && (
           <div className="w-full h-48 overflow-hidden bg-slate-700">
             <img
@@ -54,7 +63,7 @@ export default function ClassCard({
               <ProgressBar progress={progress} />
             </div>
           )}
-          {!isEnrolled && (
+          {!isEnrolled && !isComingSoon && (
             <span className="text-olive-400 text-sm font-medium">View Class →</span>
           )}
         </div>

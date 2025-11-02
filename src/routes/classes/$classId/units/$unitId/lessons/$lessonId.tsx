@@ -193,6 +193,34 @@ function LessonView() {
           <MarkdownRenderer content={lesson.content} />
         </div>
 
+        {/* Signup Prompt for Unauthenticated Users */}
+        {!user && (
+          <div className="bg-olive-500/10 border border-olive-500/50 rounded-lg p-6 mb-6">
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <h3 className="text-white font-semibold mb-2">Want to track your progress?</h3>
+                <p className="text-gray-300 text-sm mb-4">
+                  Sign up to enroll in this course, mark lessons as complete, and track your learning journey.
+                </p>
+                <div className="flex gap-3">
+                  <Link
+                    to="/signup"
+                    className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors text-sm"
+                  >
+                    Sign Up
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors text-sm"
+                  >
+                    Sign In
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Complete Button */}
         {user && !isCompleted && (
           <div className="mb-6 flex justify-center">
@@ -207,7 +235,7 @@ function LessonView() {
           </div>
         )}
 
-        {isCompleted && (
+        {user && isCompleted && (
           <div className="mb-6 flex justify-center">
             <div className="px-6 py-3 bg-olive-500/20 border border-olive-500 text-olive-400 rounded-lg flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
