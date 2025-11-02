@@ -2,8 +2,8 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
-import { X, Menu, MessageSquare } from 'lucide-react'
-import { getCommunitiesForClass, getCommunitiesForUnit, getCommunitiesForLesson } from '../db/queries'
+import { X, MessageCircle, MessageSquare, Clock } from 'lucide-react'
+import { getCommunitiesForClass, getCommunitiesForUnit, getCommunitiesForLesson, getCommunityThreads } from '../db/queries'
 
 const getClassCommunities = createServerFn({
   method: 'POST',
@@ -29,6 +29,14 @@ const getLessonCommunities = createServerFn({
     return await getCommunitiesForLesson(data.lessonId)
   })
 
+const getThreads = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { communityId: number }) => data)
+  .handler(async ({ data }) => {
+    return await getCommunityThreads(data.communityId)
+  })
+
 interface RightSidebarProps {
   classId?: string
   unitId?: string
@@ -39,15 +47,11 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
 
-  // Only show on class/unit/lesson pages
-  const shouldShow = classId && location.pathname.startsWith('/classes/')
-  if (!shouldShow) return null
-
   const classIdNum = classId ? parseInt(classId) : undefined
   const unitIdNum = unitId ? parseInt(unitId) : undefined
   const lessonIdNum = lessonId ? parseInt(lessonId) : undefined
 
-  // Fetch communities based on context
+  // Fetch communities based on context - all hooks must be called before any returns
   const { data: classCommunities } = useQuery({
     queryKey: ['classCommunities', classId],
     queryFn: async () => {
@@ -75,23 +79,35 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
     enabled: !!lessonIdNum,
   })
 
-  // Organize communities by type
-  const communities = classCommunities || []
-  const classCommunity = communities.find((c: any) => c.type === 'class')
-
-  // Show unit community if on unit or lesson page
-  const unitCommunity = unitIdNum && unitCommunities ? unitCommunities.find((c: any) => c.type === 'unit' && c.unitId === unitIdNum) : null
+  // Show only the relevant community for the current page context
+  // Priority: lesson > unit > class
+  let relevantCommunity = null
   
-  // Show lesson community if on lesson page
-  const lessonCommunity = lessonIdNum && lessonCommunities ? lessonCommunities.find((c: any) => c.type === 'lesson' && c.lessonId === lessonIdNum) : null
+  if (lessonIdNum && lessonCommunities) {
+    // On lesson page: show lesson community
+    relevantCommunity = lessonCommunities.find((c: any) => c.type === 'lesson' && c.lessonId === lessonIdNum)
+  } else if (unitIdNum && unitCommunities) {
+    // On unit page: show unit community
+    relevantCommunity = unitCommunities.find((c: any) => c.type === 'unit' && c.unitId === unitIdNum)
+  } else if (classIdNum && classCommunities) {
+    // On class page: show class community
+    const communities = classCommunities || []
+    relevantCommunity = communities.find((c: any) => c.type === 'class')
+  }
 
-  const allCommunities = [
-    classCommunity,
-    unitCommunity,
-    lessonCommunity,
-  ].filter(Boolean)
+  // Fetch threads for the relevant community - must be called unconditionally
+  const { data: threads } = useQuery({
+    queryKey: ['communityThreads', relevantCommunity?.id],
+    queryFn: async () => {
+      if (!relevantCommunity?.id) return []
+      return await getThreads({ data: { communityId: relevantCommunity.id } })
+    },
+    enabled: !!relevantCommunity?.id,
+  })
 
-  if (allCommunities.length === 0) return null
+  // Only show on class/unit/lesson pages - check after all hooks are called
+  const shouldShow = classId && location.pathname.startsWith('/classes/')
+  if (!shouldShow || !relevantCommunity) return null
 
   return (
     <>
@@ -100,7 +116,7 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
         className="fixed top-4 right-4 p-2 hover:bg-gray-700 rounded-lg transition-colors z-40 bg-gray-800 text-white"
         aria-label="Open communities menu"
       >
-        <Menu size={24} />
+        <MessageCircle size={24} />
       </button>
 
       <aside
@@ -120,50 +136,70 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
         </div>
 
         <nav className="flex-1 p-4 overflow-y-auto">
-          {classCommunity && (
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Class Community</h3>
-              <Link
-                to="/communities/$communityId"
-                params={{ communityId: classCommunity.id.toString() }}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                <MessageSquare size={20} />
-                <span className="font-medium">{classCommunity.name}</span>
-              </Link>
-            </div>
-          )}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">
+              {relevantCommunity.type === 'lesson' ? 'Lesson' : relevantCommunity.type === 'unit' ? 'Unit' : 'Class'} Community
+            </h3>
+            <Link
+              to="/communities/$communityId"
+              params={{ communityId: relevantCommunity.id.toString() }}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-4"
+            >
+              <MessageSquare size={20} />
+              <span className="font-medium">{relevantCommunity.name}</span>
+            </Link>
+          </div>
 
-          {unitCommunity && (
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Unit Community</h3>
-              <Link
-                to="/communities/$communityId"
-                params={{ communityId: unitCommunity.id.toString() }}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                <MessageSquare size={20} />
-                <span className="font-medium">{unitCommunity.name}</span>
-              </Link>
+          {/* Threads List */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase">Recent Posts</h3>
+              <span className="text-xs text-gray-500">{threads?.length || 0}</span>
             </div>
-          )}
-
-          {lessonCommunity && (
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Lesson Community</h3>
-              <Link
-                to="/communities/$communityId"
-                params={{ communityId: lessonCommunity.id.toString() }}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                <MessageSquare size={20} />
-                <span className="font-medium">{lessonCommunity.name}</span>
-              </Link>
-            </div>
-          )}
+            {!threads || threads.length === 0 ? (
+              <p className="text-sm text-gray-500">No posts yet</p>
+            ) : (
+              <div className="space-y-2">
+                {threads.slice(0, 10).map((item: any) => {
+                  const authorName =
+                    item.author.firstName || item.author.lastName
+                      ? `${item.author.firstName || ''} ${item.author.lastName || ''}`.trim()
+                      : item.author.email
+                  const date = new Date(item.thread.createdAt)
+                  const formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  })
+                  
+                  return (
+                    <Link
+                      key={item.thread.id}
+                      to="/communities/$communityId/threads/$threadId"
+                      params={{
+                        communityId: relevantCommunity.id.toString(),
+                        threadId: item.thread.id.toString(),
+                      }}
+                      onClick={() => setIsOpen(false)}
+                      className="block p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                    >
+                      <div className="text-sm font-medium text-white mb-1 line-clamp-2">
+                        {item.thread.title}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <span className="truncate">{authorName}</span>
+                        <span>•</span>
+                        <div className="flex items-center gap-1">
+                          <Clock size={12} />
+                          <span>{formattedDate}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
     </>
