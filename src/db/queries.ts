@@ -11,6 +11,11 @@ import {
   testAnswers,
   lessonCompletions,
   unitCompletions,
+  communities,
+  communityMembers,
+  communityThreads,
+  communityReplies,
+  users,
 } from './schema'
 
 // Class queries
@@ -386,6 +391,15 @@ export async function createClass(data: {
       thumbnailUrl: data.thumbnailUrl || null,
     })
     .returning()
+  
+  // Auto-create community for the class
+  await db.insert(communities).values({
+    name: `${data.title} Community`,
+    description: `Community discussion for ${data.title}`,
+    type: 'class',
+    classId: newClass.id,
+  })
+  
   return newClass
 }
 
@@ -417,6 +431,16 @@ export async function createUnit(data: {
   content: string
 }) {
   const [newUnit] = await db.insert(units).values(data).returning()
+  
+  // Auto-create community for the unit
+  await db.insert(communities).values({
+    name: `${data.title} Community`,
+    description: `Community discussion for ${data.title}`,
+    type: 'unit',
+    unitId: newUnit.id,
+    classId: data.classId,
+  })
+  
   return newUnit
 }
 
@@ -447,6 +471,21 @@ export async function createLesson(data: {
   orderIndex: number
 }) {
   const [newLesson] = await db.insert(lessons).values(data).returning()
+  
+  // Get unit to find classId
+  const unit = await getUnitById(data.unitId)
+  if (!unit) throw new Error('Unit not found')
+  
+  // Auto-create community for the lesson
+  await db.insert(communities).values({
+    name: `${data.title} Community`,
+    description: `Community discussion for ${data.title}`,
+    type: 'lesson',
+    lessonId: newLesson.id,
+    unitId: data.unitId,
+    classId: unit.classId,
+  })
+  
   return newLesson
 }
 
@@ -547,4 +586,247 @@ export async function updateTestQuestion(
 
 export async function deleteTestQuestion(questionId: number) {
   await db.delete(testQuestions).where(eq(testQuestions.id, questionId))
+}
+
+// Community queries
+export async function getCommunitiesByType(type: 'general' | 'class' | 'unit' | 'lesson', userId?: number) {
+  let query = db.select().from(communities).where(eq(communities.type, type)).orderBy(desc(communities.createdAt))
+  
+  if (type === 'general' && userId) {
+    // For general communities, only return ones user is enrolled in
+    const userCommunities = await db
+      .select({ communityId: communityMembers.communityId })
+      .from(communityMembers)
+      .where(eq(communityMembers.userId, userId))
+    
+    const communityIds = userCommunities.map((uc) => uc.communityId)
+    if (communityIds.length > 0) {
+      query = db.select().from(communities).where(and(eq(communities.type, type), inArray(communities.id, communityIds))).orderBy(desc(communities.createdAt))
+    } else {
+      return []
+    }
+  }
+  
+  return await query
+}
+
+export async function getCommunityById(communityId: number) {
+  const result = await db.select().from(communities).where(eq(communities.id, communityId)).limit(1)
+  return result[0] || null
+}
+
+export async function getCommunitiesForClass(classId: number) {
+  // Get class community and all unit/lesson communities for this class
+  return await db
+    .select()
+    .from(communities)
+    .where(eq(communities.classId, classId))
+    .orderBy(communities.type, desc(communities.createdAt))
+}
+
+export async function getCommunitiesForUnit(unitId: number) {
+  // Get unit community and related lesson communities
+  return await db
+    .select()
+    .from(communities)
+    .where(eq(communities.unitId, unitId))
+    .orderBy(communities.type, desc(communities.createdAt))
+}
+
+export async function getCommunitiesForLesson(lessonId: number) {
+  // Get lesson community
+  return await db
+    .select()
+    .from(communities)
+    .where(eq(communities.lessonId, lessonId))
+    .limit(1)
+}
+
+export async function getUserAccessibleCommunities(userId: number) {
+  // Get all communities user has access to:
+  // 1. Class communities where user is enrolled in the class
+  // 2. Unit/Lesson communities where user is enrolled in parent class
+  // 3. General communities where user is enrolled
+  
+  // Get all class enrollments
+  const userEnrollments = await db
+    .select({ classId: enrollments.classId })
+    .from(enrollments)
+    .where(eq(enrollments.userId, userId))
+  
+  const enrolledClassIds = userEnrollments.map((e) => e.classId)
+  
+  // Get class communities
+  let classCommunities: any[] = []
+  if (enrolledClassIds.length > 0) {
+    classCommunities = await db
+      .select()
+      .from(communities)
+      .where(and(eq(communities.type, 'class'), inArray(communities.classId!, enrolledClassIds)))
+  }
+  
+  // Get unit/lesson communities for enrolled classes
+  let unitLessonCommunities: any[] = []
+  if (enrolledClassIds.length > 0) {
+    unitLessonCommunities = await db
+      .select()
+      .from(communities)
+      .where(and(
+        sql`${communities.type} IN ('unit', 'lesson')`,
+        inArray(communities.classId!, enrolledClassIds)
+      ))
+  }
+  
+  // Get general communities user is enrolled in
+  const generalMemberships = await db
+    .select({ communityId: communityMembers.communityId })
+    .from(communityMembers)
+    .where(eq(communityMembers.userId, userId))
+  
+  const generalCommunityIds = generalMemberships.map((gm) => gm.communityId)
+  let generalCommunities: any[] = []
+  if (generalCommunityIds.length > 0) {
+    generalCommunities = await db
+      .select()
+      .from(communities)
+      .where(and(eq(communities.type, 'general'), inArray(communities.id, generalCommunityIds)))
+  }
+  
+  return [...classCommunities, ...unitLessonCommunities, ...generalCommunities]
+}
+
+export async function isUserInCommunity(userId: number, communityId: number) {
+  const community = await getCommunityById(communityId)
+  if (!community) return false
+  
+  // Check if it's a class/unit/lesson community - user must be enrolled in the class
+  if (community.type !== 'general' && community.classId) {
+    return await isUserEnrolled(userId, community.classId)
+  }
+  
+  // For general communities, check direct membership
+  if (community.type === 'general') {
+    const result = await db
+      .select()
+      .from(communityMembers)
+      .where(and(
+        eq(communityMembers.userId, userId),
+        eq(communityMembers.communityId, communityId)
+      ))
+      .limit(1)
+    return result.length > 0
+  }
+  
+  return false
+}
+
+export async function enrollUserInCommunity(userId: number, communityId: number) {
+  // Check if already enrolled
+  const existing = await db
+    .select()
+    .from(communityMembers)
+    .where(and(
+      eq(communityMembers.userId, userId),
+      eq(communityMembers.communityId, communityId)
+    ))
+    .limit(1)
+  
+  if (existing.length > 0) return existing[0]
+  
+  const [enrollment] = await db
+    .insert(communityMembers)
+    .values({
+      userId,
+      communityId,
+    })
+    .returning()
+  
+  return enrollment
+}
+
+export async function getCommunityThreads(communityId: number) {
+  return await db
+    .select({
+      thread: communityThreads,
+      author: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      },
+    })
+    .from(communityThreads)
+    .innerJoin(users, eq(communityThreads.authorId, users.id))
+    .where(eq(communityThreads.communityId, communityId))
+    .orderBy(desc(communityThreads.createdAt))
+}
+
+export async function getThreadById(threadId: number) {
+  const result = await db
+    .select({
+      thread: communityThreads,
+      author: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      },
+    })
+    .from(communityThreads)
+    .innerJoin(users, eq(communityThreads.authorId, users.id))
+    .where(eq(communityThreads.id, threadId))
+    .limit(1)
+  
+  return result[0] || null
+}
+
+export async function createThread(data: {
+  communityId: number
+  authorId: number
+  title: string
+  content: string
+}) {
+  const [newThread] = await db.insert(communityThreads).values(data).returning()
+  return newThread
+}
+
+export async function getThreadReplies(threadId: number) {
+  return await db
+    .select({
+      reply: communityReplies,
+      author: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      },
+    })
+    .from(communityReplies)
+    .innerJoin(users, eq(communityReplies.authorId, users.id))
+    .where(eq(communityReplies.threadId, threadId))
+    .orderBy(communityReplies.createdAt)
+}
+
+export async function createReply(data: {
+  threadId: number
+  authorId: number
+  content: string
+}) {
+  const [newReply] = await db.insert(communityReplies).values(data).returning()
+  return newReply
+}
+
+export async function createGeneralCommunity(data: {
+  name: string
+  description?: string | null
+}) {
+  const [newCommunity] = await db
+    .insert(communities)
+    .values({
+      name: data.name,
+      description: data.description || null,
+      type: 'general',
+    })
+    .returning()
+  return newCommunity
 }
