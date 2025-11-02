@@ -1,14 +1,22 @@
 import { createFileRoute, Link, useRouter, useNavigate } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn, createMiddleware } from '@tanstack/react-start'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../../contexts/AuthContext'
 import { createUnit, getUnitsByClassId } from '../../../../../db/queries'
+import { requireAdmin } from '../../../../../lib/auth'
 import { useState } from 'react'
 import { ChevronLeft } from 'lucide-react'
+
+const adminMiddleware = createMiddleware().server(async ({ next, request }) => {
+  // Verify admin access
+  requireAdmin(request)
+  return next()
+})
 
 const createUnitFn = createServerFn({
   method: 'POST',
 })
+  .middleware([adminMiddleware])
   .inputValidator(
     (data: {
       classId: number

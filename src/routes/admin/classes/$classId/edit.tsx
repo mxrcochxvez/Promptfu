@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter, useNavigate } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn, createMiddleware } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { useEffect } from 'react'
@@ -11,8 +11,15 @@ import {
   createUnit,
   createTest,
 } from '../../../../db/queries'
+import { requireAdmin } from '../../../../lib/auth'
 import { useState } from 'react'
 import { ChevronLeft, Plus, BookOpen, CheckCircle2 } from 'lucide-react'
+
+const adminMiddleware = createMiddleware().server(async ({ next, request }) => {
+  // Verify admin access
+  requireAdmin(request)
+  return next()
+})
 
 const getClass = createServerFn({
   method: 'POST',
@@ -41,6 +48,7 @@ const getTests = createServerFn({
 const updateClassFn = createServerFn({
   method: 'POST',
 })
+  .middleware([adminMiddleware])
   .inputValidator(
     (data: {
       classId: number
@@ -60,6 +68,7 @@ const updateClassFn = createServerFn({
 const createUnitFn = createServerFn({
   method: 'POST',
 })
+  .middleware([adminMiddleware])
   .inputValidator(
     (data: {
       classId: number
@@ -75,6 +84,7 @@ const createUnitFn = createServerFn({
 const createTestFn = createServerFn({
   method: 'POST',
 })
+  .middleware([adminMiddleware])
   .inputValidator(
     (data: {
       classId: number

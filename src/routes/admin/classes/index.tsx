@@ -1,15 +1,24 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn, createMiddleware } from '@tanstack/react-start'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '../../../contexts/AuthContext'
 import { getAllClasses } from '../../../db/queries'
+import { requireAdmin } from '../../../lib/auth'
 import { Plus, Edit, BookOpen } from 'lucide-react'
+
+const adminMiddleware = createMiddleware().server(async ({ next, request }) => {
+  // Verify admin access
+  requireAdmin(request)
+  return next()
+})
 
 const getClasses = createServerFn({
   method: 'GET',
-}).handler(async () => {
-  return await getAllClasses()
 })
+  .middleware([adminMiddleware])
+  .handler(async () => {
+    return await getAllClasses()
+  })
 
 export const Route = createFileRoute('/admin/classes/')({
   component: AdminClassesList,
