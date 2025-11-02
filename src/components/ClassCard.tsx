@@ -25,7 +25,7 @@ export default function ClassCard({
       params={{ classId: classId.toString() }}
       className="block"
     >
-      <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
+      <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-olive-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-olive-500/10">
         {thumbnailUrl && (
           <div className="w-full h-48 overflow-hidden bg-slate-700">
             <img
@@ -36,8 +36,8 @@ export default function ClassCard({
           </div>
         )}
         {!thumbnailUrl && (
-          <div className="w-full h-48 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
-            <BookOpen className="w-16 h-16 text-cyan-400/50" />
+          <div className="w-full h-48 bg-gradient-to-br from-olive-500/20 to-blue-500/20 flex items-center justify-center">
+            <BookOpen className="w-16 h-16 text-olive-400/50" />
           </div>
         )}
         <div className="p-6">
@@ -49,13 +49,13 @@ export default function ClassCard({
             <div className="mt-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-400">Progress</span>
-                <span className="text-sm font-medium text-cyan-400">{progress}%</span>
+                <span className="text-sm font-medium text-olive-400">{progress}%</span>
               </div>
               <ProgressBar progress={progress} />
             </div>
           )}
           {!isEnrolled && (
-            <span className="text-cyan-400 text-sm font-medium">View Class →</span>
+            <span className="text-olive-400 text-sm font-medium">View Class →</span>
           )}
         </div>
       </div>

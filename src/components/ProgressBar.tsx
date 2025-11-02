@@ -9,7 +9,7 @@ export default function ProgressBar({ progress, className = '' }: ProgressBarPro
   return (
     <div className={`w-full bg-gray-700 rounded-full h-2.5 ${className}`}>
       <div
-        className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300"
+        className="bg-olive-500 h-2.5 rounded-full transition-all duration-300"
         style={{ width: `${clampedProgress}%` }}
       />
     </div>

@@ -80,7 +80,7 @@ function CreateClass() {
       <div className="max-w-3xl mx-auto">
         <Link
           to="/admin/classes"
-          className="text-cyan-400 hover:text-cyan-300 mb-4 inline-flex items-center gap-2"
+          className="text-olive-400 hover:text-olive-300 mb-4 inline-flex items-center gap-2"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Classes
@@ -96,7 +96,7 @@ function CreateClass() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
               placeholder="Enter class title"
             />
           </div>
@@ -107,7 +107,7 @@ function CreateClass() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
               placeholder="Enter class description"
             />
           </div>
@@ -118,7 +118,7 @@ function CreateClass() {
               type="url"
               value={thumbnailUrl}
               onChange={(e) => setThumbnailUrl(e.target.value)}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -127,7 +127,7 @@ function CreateClass() {
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
             >
               {createMutation.isPending ? 'Creating...' : 'Create Class'}
             </button>

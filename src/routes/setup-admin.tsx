@@ -72,7 +72,7 @@ function SetupAdmin() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder={user?.email || 'user@example.com'}
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-olive-500"
             />
           </div>
 
@@ -91,7 +91,7 @@ function SetupAdmin() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+            className="w-full px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
           >
             {isLoading ? 'Granting Access...' : 'Grant Admin Access'}
           </button>

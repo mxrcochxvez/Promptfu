@@ -186,7 +186,7 @@ function EditUserPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-400 mx-auto mb-4"></div>
           <p className="text-white">Loading user...</p>
         </div>
       </div>
@@ -200,7 +200,7 @@ function EditUserPage() {
           <p className="text-white text-xl mb-4">User not found</p>
           <Link
             to="/admin/users"
-            className="text-cyan-400 hover:text-cyan-300"
+            className="text-olive-400 hover:text-olive-300"
           >
             Back to Users
           </Link>
@@ -215,14 +215,14 @@ function EditUserPage() {
         <div className="mb-8">
           <Link
             to="/admin/users"
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 mb-4"
+            className="inline-flex items-center gap-2 text-olive-400 hover:text-olive-300 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-cyan-500/10 p-2 rounded-lg">
-              <Edit className="w-6 h-6 text-cyan-400" />
+            <div className="bg-olive-500/10 p-2 rounded-lg">
+              <Edit className="w-6 h-6 text-olive-400" />
             </div>
             <h1 className="text-4xl font-bold text-white">Edit User</h1>
           </div>
@@ -276,7 +276,7 @@ function EditUserPage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                   placeholder="John"
                 />
               </div>
@@ -292,7 +292,7 @@ function EditUserPage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                   placeholder="Doe"
                 />
               </div>
@@ -311,7 +311,7 @@ function EditUserPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="user@example.com"
               />
             </div>
@@ -329,7 +329,7 @@ function EditUserPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 minLength={6}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="••••••••"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -341,7 +341,7 @@ function EditUserPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Save className="w-5 h-5" />
                 {isLoading ? 'Saving...' : 'Save Changes'}

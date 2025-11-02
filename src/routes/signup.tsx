@@ -41,8 +41,8 @@ function SignupPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="bg-slate-800 border border-slate-700 rounded-xl p-8 w-full max-w-md shadow-2xl">
         <div className="flex justify-center mb-6">
-          <div className="bg-cyan-500/10 p-3 rounded-full">
-            <UserPlus className="w-8 h-8 text-cyan-400" />
+          <div className="bg-olive-500/10 p-3 rounded-full">
+            <UserPlus className="w-8 h-8 text-olive-400" />
           </div>
         </div>
         <h1 className="text-3xl font-bold text-white text-center mb-2">
@@ -69,7 +69,7 @@ function SignupPage() {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="John"
               />
             </div>
@@ -82,7 +82,7 @@ function SignupPage() {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="Doe"
               />
             </div>
@@ -98,7 +98,7 @@ function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
               placeholder="you@example.com"
             />
           </div>
@@ -114,7 +114,7 @@ function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
               placeholder="••••••••"
             />
             <p className="mt-1 text-xs text-gray-500">At least 6 characters</p>
@@ -123,7 +123,7 @@ function SignupPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Creating account...' : 'Sign Up'}
           </button>
@@ -134,7 +134,7 @@ function SignupPage() {
             Already have an account?{' '}
             <a
               href="/login"
-              className="text-cyan-400 hover:text-cyan-300 font-medium"
+              className="text-olive-400 hover:text-olive-300 font-medium"
             >
               Sign in
             </a>

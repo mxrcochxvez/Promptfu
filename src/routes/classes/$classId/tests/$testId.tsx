@@ -149,7 +149,7 @@ function TestView() {
           <Link
             to="/classes/$classId"
             params={{ classId }}
-            className="text-cyan-400 hover:text-cyan-300 mb-4 inline-flex items-center gap-2"
+            className="text-olive-400 hover:text-olive-300 mb-4 inline-flex items-center gap-2"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Class
@@ -227,7 +227,7 @@ function TestView() {
                 submitMutation.isPending ||
                 test.questions.some((q) => !answers[q.id])
               }
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-8 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitMutation.isPending ? 'Submitting...' : 'Submit Test'}
             </button>

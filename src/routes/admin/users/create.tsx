@@ -91,14 +91,14 @@ function CreateUserPage() {
         <div className="mb-8">
           <Link
             to="/admin/users"
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 mb-4"
+            className="inline-flex items-center gap-2 text-olive-400 hover:text-olive-300 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-cyan-500/10 p-2 rounded-lg">
-              <UserPlus className="w-6 h-6 text-cyan-400" />
+            <div className="bg-olive-500/10 p-2 rounded-lg">
+              <UserPlus className="w-6 h-6 text-olive-400" />
             </div>
             <h1 className="text-4xl font-bold text-white">Create New User</h1>
           </div>
@@ -126,7 +126,7 @@ function CreateUserPage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                   placeholder="John"
                 />
               </div>
@@ -142,7 +142,7 @@ function CreateUserPage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                   placeholder="Doe"
                 />
               </div>
@@ -161,7 +161,7 @@ function CreateUserPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="user@example.com"
               />
             </div>
@@ -180,7 +180,7 @@ function CreateUserPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="••••••••"
               />
               <p className="mt-1 text-xs text-gray-500">Minimum 6 characters</p>
@@ -192,7 +192,7 @@ function CreateUserPage() {
                 type="checkbox"
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
-                className="w-4 h-4 text-cyan-600 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                className="w-4 h-4 text-olive-600 bg-slate-700 border-slate-600 rounded focus:ring-olive-500 focus:ring-2"
               />
               <label htmlFor="isAdmin" className="ml-2 text-sm text-gray-300">
                 Grant admin privileges
@@ -203,7 +203,7 @@ function CreateUserPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Creating...' : 'Create User'}
               </button>

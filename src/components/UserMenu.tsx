@@ -10,11 +10,11 @@ export default function UserMenu() {
       <div className="space-y-2">
         <div className="flex items-center gap-2 p-2 bg-gray-700 rounded-lg">
           {user.firstName || user.lastName ? (
-            <div className="flex items-center justify-center w-8 h-8 bg-cyan-500 rounded-full text-white font-semibold text-sm">
+            <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-sm">
               {(user.firstName?.[0] || '') + (user.lastName?.[0] || '') || user.email[0].toUpperCase()}
             </div>
           ) : (
-            <div className="flex items-center justify-center w-8 h-8 bg-cyan-500 rounded-full text-white font-semibold text-sm">
+            <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-sm">
               {user.email[0].toUpperCase()}
             </div>
           )}

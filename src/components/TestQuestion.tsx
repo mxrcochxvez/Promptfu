@@ -54,7 +54,7 @@ export default function TestQuestion({
                     : isWrong
                       ? 'bg-red-500/20 border-red-500'
                       : isSelected
-                        ? 'bg-cyan-500/20 border-cyan-500'
+                        ? 'bg-olive-500/20 border-olive-500'
                         : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
                 } ${disabled ? 'cursor-not-allowed' : ''}`}
               >
@@ -96,7 +96,7 @@ export default function TestQuestion({
                     : isWrong
                       ? 'bg-red-500/20 border-red-500'
                       : isSelected
-                        ? 'bg-cyan-500/20 border-cyan-500'
+                        ? 'bg-olive-500/20 border-olive-500'
                         : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
                 } ${disabled ? 'cursor-not-allowed' : ''}`}
               >
@@ -128,7 +128,7 @@ export default function TestQuestion({
             value={userAnswer}
             onChange={(e) => handleChange(e.target.value)}
             disabled={disabled}
-            className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500 disabled:opacity-50"
+            className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-olive-500 disabled:opacity-50"
             rows={4}
             placeholder="Type your answer here..."
           />

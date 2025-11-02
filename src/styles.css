@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --color-olive-300: #b8c48d;
+  --color-olive-400: #9aab6f;
+  --color-olive-500: #7d8f56;
+  --color-olive-600: #6b7a48;
+  --color-olive-700: #5a663c;
+}
+
 body {
   @apply m-0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",

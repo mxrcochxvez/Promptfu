@@ -7,7 +7,7 @@ import * as schema from './schema.ts'
 
 config()
 
-const DATABASE_URL = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL
+const DATABASE_URL = process.env.VITE_DATABASE_URL;
 
 if (!DATABASE_URL) {
   throw new Error(

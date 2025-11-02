@@ -146,7 +146,7 @@ function UnitView() {
           <Link
             to="/classes/$classId"
             params={{ classId }}
-            className="text-cyan-400 hover:text-cyan-300 mb-4 inline-flex items-center gap-2"
+            className="text-olive-400 hover:text-olive-300 mb-4 inline-flex items-center gap-2"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Class
@@ -212,7 +212,7 @@ function UnitView() {
             <Link
               to="/classes/$classId/units/$unitId"
               params={{ classId, unitId: prevUnit.id.toString() }}
-              className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
+              className="flex items-center gap-2 text-olive-400 hover:text-olive-300"
             >
               <ChevronLeft className="w-5 h-5" />
               Previous Unit
@@ -225,7 +225,7 @@ function UnitView() {
             <Link
               to="/classes/$classId/units/$unitId"
               params={{ classId, unitId: nextUnit.id.toString() }}
-              className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
+              className="flex items-center gap-2 text-olive-400 hover:text-olive-300"
             >
               Next Unit
               <ChevronRight className="w-5 h-5" />

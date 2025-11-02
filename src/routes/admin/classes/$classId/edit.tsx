@@ -189,7 +189,7 @@ function EditClass() {
       <div className="max-w-5xl mx-auto">
         <Link
           to="/admin/classes"
-          className="text-cyan-400 hover:text-cyan-300 mb-4 inline-flex items-center gap-2"
+          className="text-olive-400 hover:text-olive-300 mb-4 inline-flex items-center gap-2"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Classes
@@ -205,7 +205,7 @@ function EditClass() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
             />
           </div>
 
@@ -215,7 +215,7 @@ function EditClass() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
             />
           </div>
 
@@ -225,14 +225,14 @@ function EditClass() {
               type="url"
               value={thumbnailUrl}
               onChange={(e) => setThumbnailUrl(e.target.value)}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={updateMutation.isPending}
-            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
           >
             {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
@@ -242,13 +242,13 @@ function EditClass() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-white flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-cyan-400" />
+              <BookOpen className="w-6 h-6 text-olive-400" />
               Units ({units?.length || 0})
             </h2>
             <Link
               to="/admin/classes/$classId/units/create"
               params={{ classId }}
-              className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Unit
@@ -270,7 +270,7 @@ function EditClass() {
                     <Link
                       to="/admin/classes/$classId/units/$unitId/edit"
                       params={{ classId, unitId: unit.id.toString() }}
-                      className="text-cyan-400 hover:text-cyan-300"
+                      className="text-olive-400 hover:text-olive-300"
                     >
                       Edit
                     </Link>
@@ -287,13 +287,13 @@ function EditClass() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-white flex items-center gap-2">
-              <CheckCircle2 className="w-6 h-6 text-cyan-400" />
+              <CheckCircle2 className="w-6 h-6 text-olive-400" />
               Tests ({tests?.length || 0})
             </h2>
             <Link
               to="/admin/classes/$classId/tests/create"
               params={{ classId }}
-              className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Test
@@ -317,7 +317,7 @@ function EditClass() {
                     <Link
                       to="/admin/classes/$classId/tests/$testId/edit"
                       params={{ classId, testId: test.id.toString() }}
-                      className="text-cyan-400 hover:text-cyan-300"
+                      className="text-olive-400 hover:text-olive-300"
                     >
                       Edit
                     </Link>

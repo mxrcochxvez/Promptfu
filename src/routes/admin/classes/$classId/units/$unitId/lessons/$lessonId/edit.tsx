@@ -159,7 +159,7 @@ function EditLesson() {
         <Link
           to="/admin/classes/$classId/units/$unitId/edit"
           params={{ classId, unitId }}
-          className="text-cyan-400 hover:text-cyan-300 mb-4 inline-flex items-center gap-2"
+          className="text-olive-400 hover:text-olive-300 mb-4 inline-flex items-center gap-2"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Unit Edit
@@ -175,7 +175,7 @@ function EditLesson() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
               placeholder="Enter lesson title"
             />
           </div>
@@ -189,7 +189,7 @@ function EditLesson() {
               onChange={(e) => setContent(e.target.value)}
               required
               rows={15}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 font-mono text-sm"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500 font-mono text-sm"
               placeholder="Enter lesson content in Markdown or HTML format..."
             />
             <p className="text-gray-400 text-sm mt-2">
@@ -207,7 +207,7 @@ function EditLesson() {
               value={orderIndex}
               onChange={(e) => setOrderIndex(parseInt(e.target.value) || 0)}
               required
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-olive-500"
               placeholder="0"
             />
             <p className="text-gray-400 text-sm mt-2">
@@ -219,7 +219,7 @@ function EditLesson() {
             <button
               type="submit"
               disabled={updateMutation.isPending}
-              className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
             >
               {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
             </button>

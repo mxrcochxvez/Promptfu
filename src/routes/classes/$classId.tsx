@@ -175,7 +175,7 @@ function ClassDetail() {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-400">Progress</span>
-                <span className="text-cyan-400 font-semibold">{progress}%</span>
+                <span className="text-olive-400 font-semibold">{progress}%</span>
               </div>
               <ProgressBar progress={progress} />
             </div>
@@ -185,7 +185,7 @@ function ClassDetail() {
             <button
               onClick={handleEnroll}
               disabled={enrollMutation.isPending}
-              className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrollMutation.isPending ? 'Enrolling...' : 'Enroll in Class'}
             </button>
@@ -198,7 +198,7 @@ function ClassDetail() {
                 classId: classId,
                 unitId: units && units.length > 0 ? units[0].id.toString() : '1',
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors"
             >
               <PlayCircle className="w-5 h-5" />
               Continue Learning
@@ -211,7 +211,7 @@ function ClassDetail() {
         {units && units.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-cyan-400" />
+              <BookOpen className="w-6 h-6 text-olive-400" />
               Units
             </h2>
             <div className="space-y-3">
@@ -223,7 +223,7 @@ function ClassDetail() {
                     classId: classId,
                     unitId: unit.id.toString(),
                   }}
-                  className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-cyan-500/50 transition-colors"
+                  className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -244,7 +244,7 @@ function ClassDetail() {
         {tests && tests.length > 0 && (
           <div>
             <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
-              <CheckCircle2 className="w-6 h-6 text-cyan-400" />
+              <CheckCircle2 className="w-6 h-6 text-olive-400" />
               Tests & Assessments
             </h2>
             <div className="space-y-3">
@@ -256,7 +256,7 @@ function ClassDetail() {
                     classId: classId,
                     testId: test.id.toString(),
                   }}
-                  className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-cyan-500/50 transition-colors"
+                  className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div>

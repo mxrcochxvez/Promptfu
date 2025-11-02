@@ -55,7 +55,7 @@ function AdminUsersList() {
           </div>
           <Link
             to="/admin/users/create"
-            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+            className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Create New User
@@ -70,7 +70,7 @@ function AdminUsersList() {
               placeholder="Search users by email or name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
+              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
             />
           </div>
         </div>
@@ -83,7 +83,7 @@ function AdminUsersList() {
             <p className="text-gray-400 text-lg mb-4">No users found</p>
             <Link
               to="/admin/users/create"
-              className="inline-block px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors"
+              className="inline-block px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors"
             >
               Create Your First User
             </Link>
@@ -118,7 +118,7 @@ function AdminUsersList() {
                   <tr key={u.id} className="hover:bg-slate-700/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex items-center justify-center w-10 h-10 bg-cyan-500 rounded-full text-white font-semibold mr-3">
+                        <div className="flex items-center justify-center w-10 h-10 bg-olive-500 rounded-full text-white font-semibold mr-3">
                           {(u.firstName?.[0] || '') + (u.lastName?.[0] || '') || u.email[0].toUpperCase()}
                         </div>
                         <div>
@@ -165,7 +165,7 @@ function AdminUsersList() {
                       <Link
                         to="/admin/users/$userId/edit"
                         params={{ userId: u.id.toString() }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
                         Edit

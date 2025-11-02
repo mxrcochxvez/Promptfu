@@ -48,7 +48,7 @@ function AdminClassesList() {
           <h1 className="text-4xl font-bold text-white">Admin - Classes</h1>
           <Link
             to="/admin/classes/create"
-            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+            className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Create New Class
@@ -63,7 +63,7 @@ function AdminClassesList() {
             <p className="text-gray-400 text-lg mb-4">No classes created yet</p>
             <Link
               to="/admin/classes/create"
-              className="inline-block px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors"
+              className="inline-block px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors"
             >
               Create Your First Class
             </Link>
@@ -73,7 +73,7 @@ function AdminClassesList() {
             {classes.map((classItem) => (
               <div
                 key={classItem.id}
-                className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-cyan-500/50 transition-colors"
+                className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-olive-500/50 transition-colors"
               >
                 {classItem.thumbnailUrl && (
                   <div className="w-full h-48 overflow-hidden">
@@ -96,7 +96,7 @@ function AdminClassesList() {
                   <Link
                     to="/admin/classes/$classId/edit"
                     params={{ classId: classItem.id.toString() }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                     Edit

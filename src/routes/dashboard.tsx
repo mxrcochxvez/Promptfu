@@ -92,7 +92,7 @@ function Dashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-400 mx-auto mb-4"></div>
           <p className="text-white">Loading...</p>
         </div>
       </div>
@@ -128,14 +128,14 @@ function Dashboard() {
               placeholder="Search classes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
+              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
             />
           </div>
         </div>
 
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-6">
-            <BookOpen className="w-6 h-6 text-cyan-400" />
+            <BookOpen className="w-6 h-6 text-olive-400" />
             <h2 className="text-2xl font-semibold text-white">My Classes</h2>
             <span className="text-gray-400">({enrolledClasses.length})</span>
           </div>
@@ -169,7 +169,7 @@ function Dashboard() {
 
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <Search className="w-6 h-6 text-cyan-400" />
+            <Search className="w-6 h-6 text-olive-400" />
             <h2 className="text-2xl font-semibold text-white">Available Classes</h2>
             <span className="text-gray-400">({availableClasses.length})</span>
           </div>
