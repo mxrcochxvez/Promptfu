@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../contexts/AuthContext'
@@ -74,8 +74,12 @@ function UnitView() {
   const { classId, unitId } = Route.useParams()
   const { user } = useAuth()
   const queryClient = useQueryClient()
+  const location = useLocation()
   const unitIdNum = parseInt(unitId)
   const classIdNum = parseInt(classId)
+
+  // Check if we're on a child route (lessons)
+  const isChildRoute = location.pathname.includes('/lessons/')
 
   // Validate IDs
   if (isNaN(unitIdNum) || isNaN(classIdNum)) {
@@ -130,6 +134,11 @@ function UnitView() {
   })
 
   const completedLessonIds = new Set(completedLessonsList?.map((l: any) => l.lessonId) || [])
+
+  // If we're on a child route (lessons), just render the outlet
+  if (isChildRoute) {
+    return <Outlet />
+  }
 
   if (unitLoading) {
     return (
