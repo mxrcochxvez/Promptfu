@@ -1,16 +1,19 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from '../../../contexts/AuthContext'
-import ThreadCard from '../../../components/ThreadCard'
+import { useAuth } from '../../contexts/AuthContext'
+import ThreadCard from '../../components/ThreadCard'
 import {
   getCommunityById,
   getCommunityThreads,
   isUserInCommunity,
   enrollUserInCommunity,
   createThread,
-} from '../../../db/queries'
-import { MessageSquare, Plus, UserPlus } from 'lucide-react'
+  deleteThread,
+} from '../../db/queries'
+import { MessageSquare, Plus, UserPlus, ChevronLeft, Trash2 } from 'lucide-react'
+import { requireAdmin } from '../../lib/auth'
+import { createMiddleware } from '@tanstack/react-start'
 import { useState } from 'react'
 
 const getCommunity = createServerFn({
@@ -54,6 +57,21 @@ const createNewThread = createServerFn({
     return await createThread(data)
   })
 
+const adminMiddleware = createMiddleware().server(async ({ next, request }) => {
+  requireAdmin(request)
+  return next()
+})
+
+const deleteThreadFn = createServerFn({
+  method: 'POST',
+})
+  .middleware([adminMiddleware])
+  .inputValidator((data: { threadId: number }) => data)
+  .handler(async ({ data }) => {
+    await deleteThread(data.threadId)
+    return { success: true }
+  })
+
 export const Route = createFileRoute('/communities/$communityId')({
   component: CommunityDetail,
 })
@@ -62,24 +80,34 @@ function CommunityDetail() {
   const { communityId } = Route.useParams()
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
+  const location = useLocation()
   const communityIdNum = parseInt(communityId)
+
+  console.log('CommunityDetail rendering, communityId:', communityId, 'pathname:', location.pathname)
 
   const [showCreateThread, setShowCreateThread] = useState(false)
   const [threadTitle, setThreadTitle] = useState('')
   const [threadContent, setThreadContent] = useState('')
 
-  const { data: community, isLoading: communityLoading } = useQuery({
+  // Check if we're on a child route (threads)
+  const isChildRoute = location.pathname.includes('/threads/')
+
+  // All hooks must be called before any returns
+  const { data: community, isLoading: communityLoading, error: communityError } = useQuery({
     queryKey: ['community', communityId],
     queryFn: async () => {
-      return await getCommunity({ data: { communityId: communityIdNum } })
+      const result = await getCommunity({ data: { communityId: communityIdNum } })
+      console.log('Community data:', result)
+      return result
     },
   })
 
-  const { data: threads, isLoading: threadsLoading } = useQuery({
+  const { data: threads, isLoading: threadsLoading, error: threadsError } = useQuery({
     queryKey: ['communityThreads', communityId],
     queryFn: async () => {
-      return await getThreads({ data: { communityId: communityIdNum } })
+      const result = await getThreads({ data: { communityId: communityIdNum } })
+      console.log('Threads data:', result)
+      return result
     },
   })
 
@@ -128,6 +156,30 @@ function CommunityDetail() {
     },
   })
 
+  const deleteThreadMutation = useMutation({
+    mutationFn: async (threadId: number) => {
+      return await deleteThreadFn({ data: { threadId } })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['communityThreads'] })
+      queryClient.invalidateQueries({ queryKey: ['userCommunities'] })
+    },
+  })
+
+  // Validate communityId after all hooks are called
+  if (isNaN(communityIdNum)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-red-400">Invalid community ID: {communityId}</div>
+      </div>
+    )
+  }
+
+  // If we're on a child route (threads), just render the outlet
+  if (isChildRoute) {
+    return <Outlet />
+  }
+
   if (communityLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
@@ -136,10 +188,21 @@ function CommunityDetail() {
     )
   }
 
+  if (communityError) {
+    console.error('Community error:', communityError)
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-red-400">
+          Error loading community: {communityError instanceof Error ? communityError.message : 'Unknown error'}
+        </div>
+      </div>
+    )
+  }
+
   if (!community) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Community not found</div>
+        <div className="text-white">Community not found (ID: {communityId})</div>
       </div>
     )
   }
@@ -168,6 +231,15 @@ function CommunityDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
       <div className="max-w-5xl mx-auto">
+        {/* Back Link */}
+        <Link
+          to="/communities"
+          className="text-olive-400 hover:text-olive-300 mb-6 inline-flex items-center gap-2"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to Communities
+        </Link>
+
         {/* Community Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">{community.name}</h1>
@@ -264,6 +336,13 @@ function CommunityDetail() {
             <span className="text-gray-400">({threads?.length || 0})</span>
           </div>
 
+          {threadsError && (
+            <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 mb-4">
+              <p className="text-red-400 text-sm">
+                Error loading threads: {threadsError instanceof Error ? threadsError.message : 'Unknown error'}
+              </p>
+            </div>
+          )}
           {threadsLoading ? (
             <div className="text-gray-400">Loading threads...</div>
           ) : !threads || threads.length === 0 ? (
@@ -277,14 +356,32 @@ function CommunityDetail() {
           ) : (
             <div className="space-y-4">
               {threads.map((item: any) => (
-                <ThreadCard
-                  key={item.thread.id}
-                  threadId={item.thread.id}
-                  communityId={communityIdNum}
-                  title={item.thread.title}
-                  author={item.author}
-                  createdAt={item.thread.createdAt}
-                />
+                <div key={item.thread.id} className="relative">
+                  <ThreadCard
+                    threadId={item.thread.id}
+                    communityId={communityIdNum}
+                    title={item.thread.title}
+                    author={item.author}
+                    createdAt={item.thread.createdAt}
+                    replyCount={item.replyCount}
+                  />
+                  {user?.isAdmin && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        if (confirm('Are you sure you want to delete this thread? This action cannot be undone.')) {
+                          deleteThreadMutation.mutate(item.thread.id)
+                        }
+                      }}
+                      disabled={deleteThreadMutation.isPending}
+                      className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Delete thread"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
           )}
