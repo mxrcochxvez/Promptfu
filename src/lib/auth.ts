@@ -84,3 +84,57 @@ export function getUserFromRequest(request: Request): JWTPayload | null {
   return null
 }
 
+/**
+ * Require admin access - verifies user is admin from request
+ * Throws error if user is not authenticated or not admin
+ */
+export function requireAdmin(request: Request): JWTPayload {
+  const user = getUserFromRequest(request)
+  
+  if (!user) {
+    throw new Error('Unauthorized: Authentication required')
+  }
+  
+  if (!user.isAdmin) {
+    throw new Error('Forbidden: Admin access required')
+  }
+  
+  return user
+}
+
+/**
+ * Get request from TanStack Start server function context
+ * This is a helper to extract request from the handler context if available
+ */
+export function getRequestFromContext(context: any): Request | null {
+  // TanStack Start may provide request through context.request or context.event.request
+  if (context?.request) return context.request
+  if (context?.event?.request) return context.event.request
+  // Try accessing through global if available (some frameworks provide this)
+  if (typeof globalThis !== 'undefined' && (globalThis as any).request) {
+    return (globalThis as any).request
+  }
+  return null
+}
+
+/**
+ * Helper to verify admin from token string directly
+ * Used when Request object is not available (e.g., TanStack Start server functions)
+ */
+export function requireAdminFromToken(token: string | null): JWTPayload {
+  if (!token) {
+    throw new Error('Unauthorized: Authentication required')
+  }
+  
+  const user = verifyToken(token)
+  if (!user) {
+    throw new Error('Unauthorized: Invalid token')
+  }
+  
+  if (!user.isAdmin) {
+    throw new Error('Forbidden: Admin access required')
+  }
+  
+  return user
+}
+
