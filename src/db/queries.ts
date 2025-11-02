@@ -106,6 +106,12 @@ export async function enrollUserInClass(userId: number, classId: number) {
   })
 }
 
+export async function unenrollUserFromClass(userId: number, classId: number) {
+  return await db
+    .delete(enrollments)
+    .where(and(eq(enrollments.userId, userId), eq(enrollments.classId, classId)))
+}
+
 export async function getAvailableClasses(userId: number) {
   const enrolledClassIds = await db
     .select({ classId: enrollments.classId })
