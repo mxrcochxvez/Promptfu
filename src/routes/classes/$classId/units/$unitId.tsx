@@ -17,7 +17,12 @@ const getUnit = createServerFn({
 })
   .inputValidator((data: { unitId: number }) => data)
   .handler(async ({ data }) => {
-    return await getUnitById(data.unitId)
+    try {
+      return await getUnitById(data.unitId)
+    } catch (error) {
+      console.error('Error in getUnit:', error)
+      throw error
+    }
   })
 
 const getClassUnits = createServerFn({
@@ -64,21 +69,21 @@ function UnitView() {
   const unitIdNum = parseInt(unitId)
   const classIdNum = parseInt(classId)
 
-  const { data: unit, isLoading: unitLoading } = useQuery({
+  const { data: unit, isLoading: unitLoading, error: unitError } = useQuery({
     queryKey: ['unit', unitId],
     queryFn: async () => {
       return await getUnit({ data: { unitId: unitIdNum } as any })
     },
   })
 
-  const { data: allUnits } = useQuery({
+  const { data: allUnits, error: unitsError } = useQuery({
     queryKey: ['classUnits', classId],
     queryFn: async () => {
       return await getClassUnits({ data: { classId: classIdNum } as any })
     },
   })
 
-  const { data: lessons } = useQuery({
+  const { data: lessons, error: lessonsError } = useQuery({
     queryKey: ['lessons', unitId],
     queryFn: async () => {
       return await getLessons({ data: { unitId: unitIdNum } as any })
@@ -114,6 +119,16 @@ function UnitView() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-white">Loading unit...</div>
+      </div>
+    )
+  }
+
+  if (unitError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-red-400">
+          Error loading unit: {unitError instanceof Error ? unitError.message : 'Unknown error'}
+        </div>
       </div>
     )
   }
