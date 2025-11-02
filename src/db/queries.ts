@@ -16,6 +16,7 @@ import {
   communityThreads,
   communityReplies,
   users,
+  feedback,
 } from './schema'
 
 // Class queries
@@ -863,4 +864,125 @@ export async function createGeneralCommunity(data: {
     })
     .returning()
   return newCommunity
+}
+
+// Feedback queries
+export async function createFeedback(data: {
+  userId: number
+  feedbackType: 'bug' | 'coursework'
+  sentiment: 'positive' | 'negative'
+  content: string
+  classId?: number | null
+  unitId?: number | null
+  lessonId?: number | null
+}) {
+  const [newFeedback] = await db
+    .insert(feedback)
+    .values({
+      userId: data.userId,
+      feedbackType: data.feedbackType,
+      sentiment: data.sentiment,
+      content: data.content,
+      classId: data.classId || null,
+      unitId: data.unitId || null,
+      lessonId: data.lessonId || null,
+    })
+    .returning()
+  return newFeedback
+}
+
+export async function getAllFeedback() {
+  return await db
+    .select({
+      feedback: feedback,
+      user: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      },
+      class: classes,
+      unit: units,
+      lesson: lessons,
+    })
+    .from(feedback)
+    .innerJoin(users, eq(feedback.userId, users.id))
+    .leftJoin(classes, eq(feedback.classId, classes.id))
+    .leftJoin(units, eq(feedback.unitId, units.id))
+    .leftJoin(lessons, eq(feedback.lessonId, lessons.id))
+    .orderBy(desc(feedback.createdAt))
+}
+
+export async function getFeedbackByResource(data: {
+  classId?: number
+  unitId?: number
+  lessonId?: number
+}) {
+  const conditions = []
+  if (data.classId) {
+    conditions.push(eq(feedback.classId, data.classId))
+  }
+  if (data.unitId) {
+    conditions.push(eq(feedback.unitId, data.unitId))
+  }
+  if (data.lessonId) {
+    conditions.push(eq(feedback.lessonId, data.lessonId))
+  }
+
+  if (conditions.length === 0) {
+    return []
+  }
+
+  return await db
+    .select({
+      feedback: feedback,
+      user: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      },
+      class: classes,
+      unit: units,
+      lesson: lessons,
+    })
+    .from(feedback)
+    .innerJoin(users, eq(feedback.userId, users.id))
+    .leftJoin(classes, eq(feedback.classId, classes.id))
+    .leftJoin(units, eq(feedback.unitId, units.id))
+    .leftJoin(lessons, eq(feedback.lessonId, lessons.id))
+    .where(and(...conditions))
+    .orderBy(desc(feedback.createdAt))
+}
+
+export async function getFeedbackStats() {
+  // Get total counts by type and sentiment
+  const stats = await db
+    .select({
+      feedbackType: feedback.feedbackType,
+      sentiment: feedback.sentiment,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(feedback)
+    .groupBy(feedback.feedbackType, feedback.sentiment)
+
+  // Get counts by resource type
+  const resourceStats = await db
+    .select({
+      resourceType: sql<string>`CASE 
+        WHEN lesson_id IS NOT NULL THEN 'lesson'
+        WHEN unit_id IS NOT NULL THEN 'unit'
+        WHEN class_id IS NOT NULL THEN 'class'
+        ELSE 'general'
+      END`,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(feedback)
+    .groupBy(sql`resourceType`)
+
+  return {
+    byTypeAndSentiment: stats,
+    byResourceType: resourceStats,
+    total: await db.select({ count: sql<number>`count(*)::int` }).from(feedback).then((r) => r[0]?.count || 0),
+  }
 }

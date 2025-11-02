@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../../../contexts/AuthContext'
 import MarkdownRenderer from '../../../../../../components/MarkdownRenderer'
 import RightSidebar from '../../../../../../components/RightSidebar'
+import FeedbackForm from '../../../../../../components/FeedbackForm'
 import {
   getLessonById,
   getLessonsByUnitId,
@@ -195,6 +196,14 @@ function LessonView() {
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
           <MarkdownRenderer content={lesson.content} />
         </div>
+
+        {/* Feedback Form */}
+        <FeedbackForm
+          classId={parseInt(classId)}
+          unitId={parseInt(unitId)}
+          lessonId={lessonIdNum}
+          className="mb-6"
+        />
 
         {/* Signup Prompt for Unauthenticated Users */}
         {!user && (

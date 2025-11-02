@@ -210,3 +210,19 @@ export const communityReplies = pgTable('community_replies', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
+
+// Feedback table
+export const feedback = pgTable('feedback', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  feedbackType: text('feedback_type').notNull(), // 'bug' or 'coursework'
+  sentiment: text('sentiment').notNull(), // 'positive' or 'negative'
+  content: text('content').notNull(),
+  classId: integer('class_id').references(() => classes.id, { onDelete: 'cascade' }),
+  unitId: integer('unit_id').references(() => units.id, { onDelete: 'cascade' }),
+  lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../contexts/AuthContext'
 import MarkdownRenderer from '../../../../components/MarkdownRenderer'
 import RightSidebar from '../../../../components/RightSidebar'
+import FeedbackForm from '../../../../components/FeedbackForm'
 import {
   getUnitById,
   getUnitsByClassId,
@@ -258,6 +259,13 @@ function UnitView() {
             </p>
           </div>
         ) : null}
+
+        {/* Feedback Form */}
+        <FeedbackForm
+          classId={classIdNum}
+          unitId={unitIdNum}
+          className="mb-6"
+        />
 
         {/* Navigation */}
         <div className="flex justify-between items-center pt-6 border-t border-slate-700">

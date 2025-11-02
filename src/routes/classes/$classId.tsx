@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../contexts/AuthContext'
 import ProgressBar from '../../components/ProgressBar'
 import RightSidebar from '../../components/RightSidebar'
+import FeedbackForm from '../../components/FeedbackForm'
 import {
   getClassById,
   getUnitsByClassId,
@@ -348,6 +349,12 @@ function ClassDetail() {
             </div>
           </div>
         )}
+
+        {/* Feedback Form */}
+        <FeedbackForm
+          classId={classIdNum}
+          className="mt-8"
+        />
         </div>
       </div>
     </>
