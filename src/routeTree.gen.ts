@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SetupAdminRouteImport } from './routes/setup-admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,10 +37,18 @@ import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin/users/$
 import { Route as AdminClassesClassIdEditRouteImport } from './routes/admin/classes/$classId/edit'
 import { Route as AdminClassesClassIdUnitsCreateRouteImport } from './routes/admin/classes/$classId/units/create'
 import { Route as AdminClassesClassIdTestsCreateRouteImport } from './routes/admin/classes/$classId/tests/create'
+import { Route as AdminClassesClassIdUnitsUnitIdEditRouteImport } from './routes/admin/classes/$classId/units/$unitId/edit'
+import { Route as AdminClassesClassIdUnitsUnitIdLessonsCreateRouteImport } from './routes/admin/classes/$classId/units/$unitId/lessons/create'
+import { Route as AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRouteImport } from './routes/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupAdminRoute = SetupAdminRouteImport.update({
+  id: '/setup-admin',
+  path: '/setup-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -176,11 +185,30 @@ const AdminClassesClassIdTestsCreateRoute =
     path: '/admin/classes/$classId/tests/create',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminClassesClassIdUnitsUnitIdEditRoute =
+  AdminClassesClassIdUnitsUnitIdEditRouteImport.update({
+    id: '/admin/classes/$classId/units/$unitId/edit',
+    path: '/admin/classes/$classId/units/$unitId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminClassesClassIdUnitsUnitIdLessonsCreateRoute =
+  AdminClassesClassIdUnitsUnitIdLessonsCreateRouteImport.update({
+    id: '/admin/classes/$classId/units/$unitId/lessons/create',
+    path: '/admin/classes/$classId/units/$unitId/lessons/create',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute =
+  AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRouteImport.update({
+    id: '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit',
+    path: '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -205,11 +233,15 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
+  '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
+  '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -234,12 +266,16 @@ export interface FileRoutesByTo {
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
+  '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
+  '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -264,6 +300,9 @@ export interface FileRoutesById {
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
+  '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
+  '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,6 +310,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
     | '/demo/drizzle'
@@ -295,11 +335,15 @@ export interface FileRouteTypes {
     | '/demo/start/ssr'
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
+    | '/admin/classes/$classId/units/$unitId/edit'
+    | '/admin/classes/$classId/units/$unitId/lessons/create'
+    | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
     | '/login'
+    | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
     | '/demo/drizzle'
@@ -324,11 +368,15 @@ export interface FileRouteTypes {
     | '/demo/start/ssr'
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
+    | '/admin/classes/$classId/units/$unitId/edit'
+    | '/admin/classes/$classId/units/$unitId/lessons/create'
+    | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
+    | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
     | '/demo/drizzle'
@@ -353,12 +401,16 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/'
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
+    | '/admin/classes/$classId/units/$unitId/edit'
+    | '/admin/classes/$classId/units/$unitId/lessons/create'
+    | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  SetupAdminRoute: typeof SetupAdminRoute
   SignupRoute: typeof SignupRoute
   ClassesClassIdRoute: typeof ClassesClassIdRouteWithChildren
   DemoDrizzleRoute: typeof DemoDrizzleRoute
@@ -381,6 +433,9 @@ export interface RootRouteChildren {
   DemoStartSsrIndexRoute: typeof DemoStartSsrIndexRoute
   AdminClassesClassIdTestsCreateRoute: typeof AdminClassesClassIdTestsCreateRoute
   AdminClassesClassIdUnitsCreateRoute: typeof AdminClassesClassIdUnitsCreateRoute
+  AdminClassesClassIdUnitsUnitIdEditRoute: typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  AdminClassesClassIdUnitsUnitIdLessonsCreateRoute: typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
+  AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute: typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -390,6 +445,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup-admin': {
+      id: '/setup-admin'
+      path: '/setup-admin'
+      fullPath: '/setup-admin'
+      preLoaderRoute: typeof SetupAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -574,6 +636,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClassesClassIdTestsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/classes/$classId/units/$unitId/edit': {
+      id: '/admin/classes/$classId/units/$unitId/edit'
+      path: '/admin/classes/$classId/units/$unitId/edit'
+      fullPath: '/admin/classes/$classId/units/$unitId/edit'
+      preLoaderRoute: typeof AdminClassesClassIdUnitsUnitIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/classes/$classId/units/$unitId/lessons/create': {
+      id: '/admin/classes/$classId/units/$unitId/lessons/create'
+      path: '/admin/classes/$classId/units/$unitId/lessons/create'
+      fullPath: '/admin/classes/$classId/units/$unitId/lessons/create'
+      preLoaderRoute: typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': {
+      id: '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
+      path: '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
+      fullPath: '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
+      preLoaderRoute: typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -595,6 +678,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  SetupAdminRoute: SetupAdminRoute,
   SignupRoute: SignupRoute,
   ClassesClassIdRoute: ClassesClassIdRouteWithChildren,
   DemoDrizzleRoute: DemoDrizzleRoute,
@@ -617,6 +701,12 @@ const rootRouteChildren: RootRouteChildren = {
   DemoStartSsrIndexRoute: DemoStartSsrIndexRoute,
   AdminClassesClassIdTestsCreateRoute: AdminClassesClassIdTestsCreateRoute,
   AdminClassesClassIdUnitsCreateRoute: AdminClassesClassIdUnitsCreateRoute,
+  AdminClassesClassIdUnitsUnitIdEditRoute:
+    AdminClassesClassIdUnitsUnitIdEditRoute,
+  AdminClassesClassIdUnitsUnitIdLessonsCreateRoute:
+    AdminClassesClassIdUnitsUnitIdLessonsCreateRoute,
+  AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute:
+    AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
