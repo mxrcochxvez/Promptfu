@@ -21,13 +21,19 @@ export default function CommunityCard({
     lesson: 'Lesson',
   }
 
+  const handleClick = (e: React.MouseEvent) => {
+    console.log('CommunityCard clicked, communityId:', communityId)
+    // Let the Link handle navigation
+  }
+
   return (
     <Link
       to="/communities/$communityId"
       params={{ communityId: communityId.toString() }}
       className="block"
+      onClick={handleClick}
     >
-      <div className="bg-slate-800 rounded-lg border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors">
+      <div className="bg-slate-800 rounded-lg border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors cursor-pointer">
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-olive-400" />
