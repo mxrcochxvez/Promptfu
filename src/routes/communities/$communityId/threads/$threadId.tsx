@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../contexts/AuthContext'
@@ -9,8 +9,12 @@ import {
   getThreadReplies,
   createReply,
   getCommunityById,
+  deleteThread,
+  deleteReply,
 } from '../../../../db/queries'
-import { ChevronLeft, MessageSquare, Send } from 'lucide-react'
+import { ChevronLeft, MessageSquare, Send, Trash2 } from 'lucide-react'
+import { requireAdmin } from '../../../../lib/auth'
+import { createMiddleware } from '@tanstack/react-start'
 import { useState } from 'react'
 
 const getThread = createServerFn({
@@ -45,6 +49,31 @@ const createNewReply = createServerFn({
     return await createReply(data)
   })
 
+const adminMiddleware = createMiddleware().server(async ({ next, request }) => {
+  requireAdmin(request)
+  return next()
+})
+
+const deleteThreadFn = createServerFn({
+  method: 'POST',
+})
+  .middleware([adminMiddleware])
+  .inputValidator((data: { threadId: number }) => data)
+  .handler(async ({ data }) => {
+    await deleteThread(data.threadId)
+    return { success: true }
+  })
+
+const deleteReplyFn = createServerFn({
+  method: 'POST',
+})
+  .middleware([adminMiddleware])
+  .inputValidator((data: { replyId: number }) => data)
+  .handler(async ({ data }) => {
+    await deleteReply(data.replyId)
+    return { success: true }
+  })
+
 export const Route = createFileRoute('/communities/$communityId/threads/$threadId')({
   component: ThreadDetail,
 })
@@ -53,6 +82,7 @@ function ThreadDetail() {
   const { communityId, threadId } = Route.useParams()
   const { user } = useAuth()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const communityIdNum = parseInt(communityId)
   const threadIdNum = parseInt(threadId)
 
@@ -97,6 +127,27 @@ function ThreadDetail() {
     },
   })
 
+  const deleteThreadMutation = useMutation({
+    mutationFn: async () => {
+      return await deleteThreadFn({ data: { threadId: threadIdNum } })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['communityThreads'] })
+      queryClient.invalidateQueries({ queryKey: ['thread'] })
+      navigate({ to: '/communities/$communityId', params: { communityId } })
+    },
+  })
+
+  const deleteReplyMutation = useMutation({
+    mutationFn: async (replyId: number) => {
+      return await deleteReplyFn({ data: { replyId } })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['threadReplies'] })
+      queryClient.invalidateQueries({ queryKey: ['communityThreads'] })
+    },
+  })
+
   if (threadLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
@@ -137,8 +188,24 @@ function ThreadDetail() {
         </Link>
 
         {/* Thread */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-          <h1 className="text-3xl font-bold text-white mb-4">{thread.title}</h1>
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6 relative">
+          <div className="flex items-start justify-between mb-4">
+            <h1 className="text-3xl font-bold text-white flex-1">{thread.title}</h1>
+            {user?.isAdmin && (
+              <button
+                onClick={async () => {
+                  if (confirm('Are you sure you want to delete this thread? This will also delete all replies. This action cannot be undone.')) {
+                    await deleteThreadMutation.mutateAsync()
+                  }
+                }}
+                disabled={deleteThreadMutation.isPending}
+                className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-4"
+                title="Delete thread"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-3 mb-4 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-xs">
@@ -173,9 +240,13 @@ function ThreadDetail() {
               {replies.map((item: any) => (
                 <ReplyCard
                   key={item.reply.id}
+                  replyId={item.reply.id}
                   content={item.reply.content}
                   author={item.author}
                   createdAt={item.reply.createdAt}
+                  showDelete={user?.isAdmin}
+                  onDelete={(replyId) => deleteReplyMutation.mutate(replyId)}
+                  isDeleting={deleteReplyMutation.isPending}
                 />
               ))}
             </div>
