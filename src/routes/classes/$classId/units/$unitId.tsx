@@ -6,6 +6,7 @@ import MarkdownRenderer from '../../../../components/MarkdownRenderer'
 import {
   getUnitById,
   getUnitsByClassId,
+  getLessonsByUnitId,
   isUnitCompleted,
   markUnitComplete,
 } from '../../../../db/queries'
@@ -25,6 +26,14 @@ const getClassUnits = createServerFn({
   .inputValidator((data: { classId: number }) => data)
   .handler(async ({ data }) => {
     return await getUnitsByClassId(data.classId)
+  })
+
+const getLessons = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { unitId: number }) => data)
+  .handler(async ({ data }) => {
+    return await getLessonsByUnitId(data.unitId)
   })
 
 const checkUnitComplete = createServerFn({
@@ -66,6 +75,13 @@ function UnitView() {
     queryKey: ['classUnits', classId],
     queryFn: async () => {
       return await getClassUnits({ data: { classId: classIdNum } as any })
+    },
+  })
+
+  const { data: lessons } = useQuery({
+    queryKey: ['lessons', unitId],
+    queryFn: async () => {
+      return await getLessons({ data: { unitId: unitIdNum } as any })
     },
   })
 
@@ -138,10 +154,34 @@ function UnitView() {
           <h1 className="text-3xl font-bold text-white mb-2">{unit.title}</h1>
         </div>
 
-        {/* Content */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
-          <MarkdownRenderer content={unit.content} />
-        </div>
+        {/* Lessons Content */}
+        {lessons && lessons.length > 0 ? (
+          <div className="space-y-8 mb-6">
+            {lessons.map((lesson, index) => (
+              <div
+                key={lesson.id}
+                className="bg-slate-800 border border-slate-700 rounded-lg p-8"
+              >
+                <h2 className="text-2xl font-semibold text-white mb-4">
+                  {index + 1}. {lesson.title}
+                </h2>
+                <div className="prose prose-invert max-w-none">
+                  <MarkdownRenderer content={lesson.content} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : unit.content ? (
+          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
+            <MarkdownRenderer content={unit.content} />
+          </div>
+        ) : (
+          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
+            <p className="text-gray-400">
+              This unit doesn't have any content yet. Please check back later.
+            </p>
+          </div>
+        )}
 
         {/* Complete Button */}
         {user && !isCompleted && (
