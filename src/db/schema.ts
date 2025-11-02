@@ -44,6 +44,18 @@ export const units = pgTable('units', {
   createdAt: timestamp('created_at').defaultNow(),
 })
 
+// Lessons table
+export const lessons = pgTable('lessons', {
+  id: serial('id').primaryKey(),
+  unitId: integer('unit_id')
+    .notNull()
+    .references(() => units.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  content: text('content').notNull(), // Markdown/HTML content
+  orderIndex: integer('order_index').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+})
+
 // Tests table
 export const tests = pgTable('tests', {
   id: serial('id').primaryKey(),
