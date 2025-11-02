@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../contexts/AuthContext'
 import ProgressBar from '../../components/ProgressBar'
+import RightSidebar from '../../components/RightSidebar'
 import {
   getClassById,
   getUnitsByClassId,
@@ -223,8 +224,10 @@ function ClassDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
-      <div className="max-w-5xl mx-auto">
+    <>
+      <RightSidebar classId={classId} />
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+        <div className="max-w-5xl mx-auto">
         {/* Class Header */}
         <div className="mb-8">
           {classData.thumbnailUrl && (
@@ -345,7 +348,8 @@ function ClassDetail() {
             </div>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

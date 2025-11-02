@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../../../contexts/AuthContext'
 import MarkdownRenderer from '../../../../components/MarkdownRenderer'
+import RightSidebar from '../../../../components/RightSidebar'
 import {
   getUnitById,
   getUnitsByClassId,
@@ -175,8 +176,10 @@ function UnitView() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <>
+      <RightSidebar classId={classId} unitId={unitId} />
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <Link
@@ -284,7 +287,8 @@ function UnitView() {
             <div></div>
           )}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
