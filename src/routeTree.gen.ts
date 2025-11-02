@@ -36,6 +36,7 @@ import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin/users/$
 import { Route as AdminClassesClassIdEditRouteImport } from './routes/admin/classes/$classId/edit'
 import { Route as AdminClassesClassIdUnitsCreateRouteImport } from './routes/admin/classes/$classId/units/create'
 import { Route as AdminClassesClassIdTestsCreateRouteImport } from './routes/admin/classes/$classId/tests/create'
+import { Route as ClassesClassIdUnitsUnitIdLessonsLessonIdRouteImport } from './routes/classes/$classId/units/$unitId/lessons/$lessonId'
 import { Route as AdminClassesClassIdUnitsUnitIdEditRouteImport } from './routes/admin/classes/$classId/units/$unitId/edit'
 import { Route as AdminClassesClassIdUnitsUnitIdLessonsCreateRouteImport } from './routes/admin/classes/$classId/units/$unitId/lessons/create'
 import { Route as AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRouteImport } from './routes/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
@@ -179,6 +180,12 @@ const AdminClassesClassIdTestsCreateRoute =
     path: '/admin/classes/$classId/tests/create',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ClassesClassIdUnitsUnitIdLessonsLessonIdRoute =
+  ClassesClassIdUnitsUnitIdLessonsLessonIdRouteImport.update({
+    id: '/lessons/$lessonId',
+    path: '/lessons/$lessonId',
+    getParentRoute: () => ClassesClassIdUnitsUnitIdRoute,
+  } as any)
 const AdminClassesClassIdUnitsUnitIdEditRoute =
   AdminClassesClassIdUnitsUnitIdEditRouteImport.update({
     id: '/admin/classes/$classId/units/$unitId/edit',
@@ -219,7 +226,7 @@ export interface FileRoutesByFullPath {
   '/admin/classes/$classId/edit': typeof AdminClassesClassIdEditRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
-  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRoute
+  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -227,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -251,7 +259,7 @@ export interface FileRoutesByTo {
   '/admin/classes/$classId/edit': typeof AdminClassesClassIdEditRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
-  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRoute
+  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -259,6 +267,7 @@ export interface FileRoutesByTo {
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -284,7 +293,7 @@ export interface FileRoutesById {
   '/admin/classes/$classId/edit': typeof AdminClassesClassIdEditRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
-  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRoute
+  '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -292,6 +301,7 @@ export interface FileRoutesById {
   '/admin/classes/$classId/tests/create': typeof AdminClassesClassIdTestsCreateRoute
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
+  '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
+    | '/classes/$classId/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
+    | '/classes/$classId/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   id:
@@ -390,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/tests/create'
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
+    | '/classes/$classId/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesById: FileRoutesById
@@ -616,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClassesClassIdTestsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/classes/$classId/units/$unitId/lessons/$lessonId': {
+      id: '/classes/$classId/units/$unitId/lessons/$lessonId'
+      path: '/lessons/$lessonId'
+      fullPath: '/classes/$classId/units/$unitId/lessons/$lessonId'
+      preLoaderRoute: typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRouteImport
+      parentRoute: typeof ClassesClassIdUnitsUnitIdRoute
+    }
     '/admin/classes/$classId/units/$unitId/edit': {
       id: '/admin/classes/$classId/units/$unitId/edit'
       path: '/admin/classes/$classId/units/$unitId/edit'
@@ -640,14 +660,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ClassesClassIdUnitsUnitIdRouteChildren {
+  ClassesClassIdUnitsUnitIdLessonsLessonIdRoute: typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
+}
+
+const ClassesClassIdUnitsUnitIdRouteChildren: ClassesClassIdUnitsUnitIdRouteChildren =
+  {
+    ClassesClassIdUnitsUnitIdLessonsLessonIdRoute:
+      ClassesClassIdUnitsUnitIdLessonsLessonIdRoute,
+  }
+
+const ClassesClassIdUnitsUnitIdRouteWithChildren =
+  ClassesClassIdUnitsUnitIdRoute._addFileChildren(
+    ClassesClassIdUnitsUnitIdRouteChildren,
+  )
+
 interface ClassesClassIdRouteChildren {
   ClassesClassIdTestsTestIdRoute: typeof ClassesClassIdTestsTestIdRoute
-  ClassesClassIdUnitsUnitIdRoute: typeof ClassesClassIdUnitsUnitIdRoute
+  ClassesClassIdUnitsUnitIdRoute: typeof ClassesClassIdUnitsUnitIdRouteWithChildren
 }
 
 const ClassesClassIdRouteChildren: ClassesClassIdRouteChildren = {
   ClassesClassIdTestsTestIdRoute: ClassesClassIdTestsTestIdRoute,
-  ClassesClassIdUnitsUnitIdRoute: ClassesClassIdUnitsUnitIdRoute,
+  ClassesClassIdUnitsUnitIdRoute: ClassesClassIdUnitsUnitIdRouteWithChildren,
 }
 
 const ClassesClassIdRouteWithChildren = ClassesClassIdRoute._addFileChildren(

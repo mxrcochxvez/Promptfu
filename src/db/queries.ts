@@ -9,6 +9,7 @@ import {
   enrollments,
   testSubmissions,
   testAnswers,
+  lessonCompletions,
   unitCompletions,
 } from './schema'
 
@@ -124,6 +125,79 @@ export async function getAvailableClasses(userId: number) {
     .orderBy(desc(classes.createdAt))
 }
 
+// Lesson completion queries
+export async function isLessonCompleted(userId: number, lessonId: number) {
+  const result = await db
+    .select()
+    .from(lessonCompletions)
+    .where(and(eq(lessonCompletions.userId, userId), eq(lessonCompletions.lessonId, lessonId)))
+    .limit(1)
+  return result.length > 0
+}
+
+export async function markLessonComplete(userId: number, lessonId: number) {
+  const existing = await isLessonCompleted(userId, lessonId)
+  if (existing) return null
+
+  const completion = await db.insert(lessonCompletions).values({
+    userId,
+    lessonId,
+  }).returning()
+
+  // Auto-complete unit if all lessons are completed
+  const lesson = await getLessonById(lessonId)
+  if (lesson) {
+    const unitLessons = await getLessonsByUnitId(lesson.unitId)
+    const lessonIds = unitLessons.map((l) => l.id)
+    const completedLessons = await db
+      .select()
+      .from(lessonCompletions)
+      .where(
+        and(
+          eq(lessonCompletions.userId, userId),
+          inArray(lessonCompletions.lessonId, lessonIds)
+        )
+      )
+
+    if (completedLessons.length === unitLessons.length && unitLessons.length > 0) {
+      // All lessons completed, mark unit as complete
+      await markUnitComplete(userId, lesson.unitId)
+    }
+  }
+
+  return completion[0]
+}
+
+export async function getCompletedLessons(userId: number, unitId: number) {
+  const unitLessons = await getLessonsByUnitId(unitId)
+  const lessonIds = unitLessons.map((l) => l.id)
+
+  if (lessonIds.length === 0) return []
+
+  return await db
+    .select()
+    .from(lessonCompletions)
+    .where(
+      and(
+        eq(lessonCompletions.userId, userId),
+        inArray(lessonCompletions.lessonId, lessonIds)
+      )
+    )
+}
+
+// Calculate unit completion percentage based on lessons
+export async function getUnitCompletion(userId: number, unitId: number) {
+  const unitLessons = await getLessonsByUnitId(unitId)
+  
+  if (unitLessons.length === 0) {
+    // If no lessons, check if unit was manually completed (legacy)
+    return (await isUnitCompleted(userId, unitId)) ? 100 : 0
+  }
+
+  const completedLessons = await getCompletedLessons(userId, unitId)
+  return Math.round((completedLessons.length / unitLessons.length) * 100)
+}
+
 // Completion queries
 export async function getCompletedUnits(userId: number, classId: number) {
   const classUnits = await getUnitsByClassId(classId)
@@ -174,25 +248,29 @@ export async function hasCompletedTest(userId: number, testId: number) {
   return result.length > 0
 }
 
-// Calculate class completion percentage
+// Calculate class completion percentage based on unit progress
 export async function getClassCompletion(userId: number, classId: number) {
   const classUnits = await getUnitsByClassId(classId)
   const classTests = await getTestsByClassId(classId)
 
+  // Calculate average unit completion percentage
+  let totalUnitProgress = 0
+  for (const unit of classUnits) {
+    totalUnitProgress += await getUnitCompletion(userId, unit.id)
+  }
+
+  // Calculate test completion (tests count as 100% if completed, 0% if not)
+  let totalTestProgress = 0
+  for (const test of classTests) {
+    const completed = await hasCompletedTest(userId, test.id)
+    totalTestProgress += completed ? 100 : 0
+  }
+
   const totalItems = classUnits.length + classTests.length
   if (totalItems === 0) return 0
 
-  const completedUnits = await getCompletedUnits(userId, classId)
-  const completedUnitsCount = completedUnits.length
-
-  let completedTestsCount = 0
-  for (const test of classTests) {
-    const completed = await hasCompletedTest(userId, test.id)
-    if (completed) completedTestsCount++
-  }
-
-  const completedItems = completedUnitsCount + completedTestsCount
-  return Math.round((completedItems / totalItems) * 100)
+  const totalProgress = totalUnitProgress + totalTestProgress
+  return Math.round(totalProgress / totalItems)
 }
 
 // Test submission

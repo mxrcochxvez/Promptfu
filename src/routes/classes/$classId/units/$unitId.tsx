@@ -7,10 +7,11 @@ import {
   getUnitById,
   getUnitsByClassId,
   getLessonsByUnitId,
-  isUnitCompleted,
-  markUnitComplete,
+  getUnitCompletion,
+  getCompletedLessons,
 } from '../../../../db/queries'
-import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, BookOpen, ArrowRight, CheckCircle2 } from 'lucide-react'
+import ProgressBar from '../../../../components/ProgressBar'
 
 const getUnit = createServerFn({
   method: 'POST',
@@ -41,21 +42,20 @@ const getLessons = createServerFn({
     return await getLessonsByUnitId(data.unitId)
   })
 
-const checkUnitComplete = createServerFn({
+const getUnitProgress = createServerFn({
   method: 'POST',
 })
   .inputValidator((data: { userId: number; unitId: number }) => data)
   .handler(async ({ data }) => {
-    return await isUnitCompleted(data.userId, data.unitId)
+    return await getUnitCompletion(data.userId, data.unitId)
   })
 
-const completeUnit = createServerFn({
+const getCompletedLessonsList = createServerFn({
   method: 'POST',
 })
   .inputValidator((data: { userId: number; unitId: number }) => data)
   .handler(async ({ data }) => {
-    await markUnitComplete(data.userId, data.unitId)
-    return { success: true }
+    return await getCompletedLessons(data.userId, data.unitId)
   })
 
 export const Route = createFileRoute('/classes/$classId/units/$unitId')({
@@ -107,30 +107,29 @@ function UnitView() {
     },
   })
 
-  const { data: isCompleted } = useQuery({
-    queryKey: ['unitCompleted', unitId, user?.id],
+  const { data: unitProgress } = useQuery({
+    queryKey: ['unitCompletion', unitId, user?.id],
     queryFn: async () => {
-      if (!user?.id) return false
-      return await checkUnitComplete({
+      if (!user?.id) return 0
+      return await getUnitProgress({
         data: { userId: user.id, unitId: unitIdNum },
       })
     },
     enabled: !!user?.id,
   })
 
-  const completeMutation = useMutation({
-    mutationFn: async () => {
-      if (!user?.id) throw new Error('Not authenticated')
-      return await completeUnit({
+  const { data: completedLessonsList } = useQuery({
+    queryKey: ['completedLessons', unitId, user?.id],
+    queryFn: async () => {
+      if (!user?.id) return []
+      return await getCompletedLessonsList({
         data: { userId: user.id, unitId: unitIdNum },
       })
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['unitCompleted'] })
-      queryClient.invalidateQueries({ queryKey: ['classProgress'] })
-      queryClient.invalidateQueries({ queryKey: ['enrolledClasses'] })
-    },
+    enabled: !!user?.id,
   })
+
+  const completedLessonIds = new Set(completedLessonsList?.map((l: any) => l.lessonId) || [])
 
   if (unitLoading) {
     return (
@@ -165,10 +164,6 @@ function UnitView() {
       ? allUnits[currentIndex + 1]
       : null
 
-  const handleComplete = async () => {
-    if (!user || isCompleted) return
-    await completeMutation.mutateAsync()
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
@@ -184,59 +179,73 @@ function UnitView() {
             Back to Class
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">{unit.title}</h1>
+          
+          {/* Unit Progress */}
+          {user && unitProgress !== undefined && (
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-400">Progress</span>
+                <span className="text-olive-400 font-semibold">{unitProgress}%</span>
+              </div>
+              <ProgressBar progress={unitProgress} />
+            </div>
+          )}
         </div>
 
-        {/* Lessons Content */}
-        {lessons && lessons.length > 0 ? (
-          <div className="space-y-8 mb-6">
-            {lessons.map((lesson, index) => (
-              <div
-                key={lesson.id}
-                className="bg-slate-800 border border-slate-700 rounded-lg p-8"
-              >
-                <h2 className="text-2xl font-semibold text-white mb-4">
-                  {index + 1}. {lesson.title}
-                </h2>
-                <div className="prose prose-invert max-w-none">
-                  <MarkdownRenderer content={lesson.content} />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : unit.content ? (
+        {/* Unit Description (if exists and no lessons) */}
+        {(!lessons || lessons.length === 0) && unit.content && (
           <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
             <MarkdownRenderer content={unit.content} />
           </div>
-        ) : (
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
-            <p className="text-gray-400">
-              This unit doesn't have any content yet. Please check back later.
-            </p>
-          </div>
         )}
 
-        {/* Complete Button */}
-        {user && !isCompleted && (
-          <div className="mb-6 flex justify-center">
-            <button
-              onClick={handleComplete}
-              disabled={completeMutation.isPending}
-              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              <CheckCircle2 className="w-5 h-5" />
-              {completeMutation.isPending ? 'Marking complete...' : 'Mark as Complete'}
-            </button>
-          </div>
-        )}
-
-        {isCompleted && (
-          <div className="mb-6 flex justify-center">
-            <div className="px-6 py-3 bg-olive-500/20 border border-olive-500 text-olive-400 rounded-lg flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5" />
-              Completed
+        {/* Lessons Section */}
+        {lessons && lessons.length > 0 ? (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-olive-400" />
+              Lessons
+            </h2>
+            <div className="space-y-3">
+              {lessons.map((lesson, index) => {
+                const isCompleted = completedLessonIds.has(lesson.id)
+                return (
+                  <Link
+                    key={lesson.id}
+                    to="/classes/$classId/units/$unitId/lessons/$lessonId"
+                    params={{
+                      classId,
+                      unitId,
+                      lessonId: lesson.id.toString(),
+                    }}
+                    className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {isCompleted && (
+                          <CheckCircle2 className="w-5 h-5 text-olive-400 flex-shrink-0" />
+                        )}
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-400 text-sm font-medium">
+                            Lesson {index + 1}
+                          </span>
+                          <h3 className="text-white font-medium">{lesson.title}</h3>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </div>
-        )}
+        ) : !unit.content ? (
+          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-6">
+            <p className="text-gray-400">
+              This unit doesn't have any lessons yet. Please check back later.
+            </p>
+          </div>
+        ) : null}
 
         {/* Navigation */}
         <div className="flex justify-between items-center pt-6 border-t border-slate-700">

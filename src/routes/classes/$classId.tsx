@@ -10,10 +10,63 @@ import {
   isUserEnrolled,
   enrollUserInClass,
   getClassCompletion,
-  getCompletedUnits,
+  getUnitCompletion,
   hasCompletedTest,
 } from '../../db/queries'
 import { BookOpen, PlayCircle, CheckCircle2, ArrowRight } from 'lucide-react'
+
+function UnitCard({
+  unit,
+  index,
+  classId,
+  userId,
+  getUnitProgress,
+}: {
+  unit: { id: number; title: string }
+  index: number
+  classId: string
+  userId?: number
+  getUnitProgress: any
+}) {
+  const { data: unitProgress } = useQuery({
+    queryKey: ['unitProgress', unit.id, userId],
+    queryFn: async () => {
+      if (!userId) return 0
+      return await getUnitProgress({ data: { userId, unitId: unit.id } as any })
+    },
+    enabled: !!userId,
+  })
+
+  return (
+    <Link
+      to="/classes/$classId/units/$unitId"
+      params={{
+        classId: classId.toString(),
+        unitId: unit.id.toString(),
+      }}
+      className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <span className="text-gray-400 text-sm font-medium">
+            Unit {index + 1}
+          </span>
+          <h3 className="text-white font-medium">{unit.title}</h3>
+        </div>
+        <ArrowRight className="w-5 h-5 text-gray-400" />
+      </div>
+      {userId && unitProgress !== undefined && (
+        <div className="mt-3">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-gray-400 text-xs">Progress</span>
+            <span className="text-olive-400 text-xs font-semibold">{unitProgress}%</span>
+          </div>
+          <ProgressBar progress={unitProgress} />
+        </div>
+      )}
+    </Link>
+  )
+}
 
 const getClass = createServerFn({
   method: 'POST',
@@ -62,6 +115,14 @@ const getCompletion = createServerFn({
   .inputValidator((data: { userId: number; classId: number }) => data)
   .handler(async ({ data }) => {
     return await getClassCompletion(data.userId, data.classId)
+  })
+
+const getUnitProgress = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { userId: number; unitId: number }) => data)
+  .handler(async ({ data }) => {
+    return await getUnitCompletion(data.userId, data.unitId)
   })
 
 export const Route = createFileRoute('/classes/$classId')({
@@ -225,25 +286,14 @@ function ClassDetail() {
             </h2>
             <div className="space-y-3">
               {units.map((unit, index) => (
-                <Link
+                <UnitCard
                   key={unit.id}
-                  to="/classes/$classId/units/$unitId"
-                  params={{
-                    classId: classId.toString(),
-                    unitId: unit.id.toString(),
-                  }}
-                  className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-gray-400 text-sm font-medium">
-                        Unit {index + 1}
-                      </span>
-                      <h3 className="text-white font-medium">{unit.title}</h3>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400" />
-                  </div>
-                </Link>
+                  unit={unit}
+                  index={index}
+                  classId={classId}
+                  userId={user?.id}
+                  getUnitProgress={getUnitProgress}
+                />
               ))}
             </div>
           </div>

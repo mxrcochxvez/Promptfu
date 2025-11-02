@@ -29,7 +29,10 @@ export default function Header() {
         >
           <Menu size={24} />
         </button>
-        <Link to="/" className="ml-4 flex items-center hover:opacity-80 transition-opacity">
+        <Link 
+          to={user ? "/dashboard" : "/"} 
+          className="ml-4 flex items-center hover:opacity-80 transition-opacity"
+        >
           <img 
             src="/promptfu-logo.png" 
             alt="Promptfu - AI Learning Resources" 
@@ -55,18 +58,20 @@ export default function Header() {
         </div>
 
         <nav className="flex-1 p-4 overflow-y-auto">
-          <Link
-            to="/"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-olive-600 hover:bg-olive-700 transition-colors mb-2',
-            }}
-          >
-            <Home size={20} />
-            <span className="font-medium">Home</span>
-          </Link>
+          {!user && (
+            <Link
+              to="/"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+              activeProps={{
+                className:
+                  'flex items-center gap-3 p-3 rounded-lg bg-olive-600 hover:bg-olive-700 transition-colors mb-2',
+              }}
+            >
+              <Home size={20} />
+              <span className="font-medium">Home</span>
+            </Link>
+          )}
 
           {user && (
             <Link

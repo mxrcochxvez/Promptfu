@@ -124,6 +124,18 @@ export const testAnswers = pgTable('test_answers', {
   isCorrect: boolean('is_correct').notNull().default(false),
 })
 
+// Lesson completions table
+export const lessonCompletions = pgTable('lesson_completions', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  lessonId: integer('lesson_id')
+    .notNull()
+    .references(() => lessons.id, { onDelete: 'cascade' }),
+  completedAt: timestamp('completed_at').defaultNow(),
+})
+
 // Unit completions table
 export const unitCompletions = pgTable('unit_completions', {
   id: serial('id').primaryKey(),
