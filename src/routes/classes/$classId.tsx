@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../../contexts/AuthContext'
@@ -72,7 +72,11 @@ function ClassDetail() {
   const { classId } = Route.useParams()
   const { user } = useAuth()
   const queryClient = useQueryClient()
+  const location = useLocation()
   const classIdNum = parseInt(classId)
+  
+  // Check if we're on a child route (units or tests)
+  const isChildRoute = location.pathname.includes('/units/') || location.pathname.includes('/tests/')
 
   const { data: classData, isLoading: classLoading } = useQuery({
     queryKey: ['class', classId],
@@ -152,6 +156,11 @@ function ClassDetail() {
     await enrollMutation.mutateAsync()
   }
 
+  // If we're on a child route, just render the outlet
+  if (isChildRoute) {
+    return <Outlet />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
       <div className="max-w-5xl mx-auto">
@@ -220,7 +229,7 @@ function ClassDetail() {
                   key={unit.id}
                   to="/classes/$classId/units/$unitId"
                   params={{
-                    classId: classId,
+                    classId: classId.toString(),
                     unitId: unit.id.toString(),
                   }}
                   className="block bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors"

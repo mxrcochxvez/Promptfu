@@ -60,6 +60,14 @@ const completeUnit = createServerFn({
 
 export const Route = createFileRoute('/classes/$classId/units/$unitId')({
   component: UnitView,
+  beforeLoad: ({ params }) => {
+    // Ensure params are valid
+    const classIdNum = parseInt(params.classId)
+    const unitIdNum = parseInt(params.unitId)
+    if (isNaN(classIdNum) || isNaN(unitIdNum)) {
+      throw new Error('Invalid class or unit ID')
+    }
+  },
 })
 
 function UnitView() {
@@ -68,6 +76,15 @@ function UnitView() {
   const queryClient = useQueryClient()
   const unitIdNum = parseInt(unitId)
   const classIdNum = parseInt(classId)
+
+  // Validate IDs
+  if (isNaN(unitIdNum) || isNaN(classIdNum)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-red-400">Invalid unit or class ID</div>
+      </div>
+    )
+  }
 
   const { data: unit, isLoading: unitLoading, error: unitError } = useQuery({
     queryKey: ['unit', unitId],
