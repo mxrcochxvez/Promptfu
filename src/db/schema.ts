@@ -156,3 +156,57 @@ export const todos = pgTable('todos', {
   title: text('title').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 })
+
+// Communities table
+export const communities = pgTable('communities', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  type: text('type').notNull(), // 'general', 'class', 'unit', 'lesson'
+  classId: integer('class_id').references(() => classes.id, { onDelete: 'cascade' }),
+  unitId: integer('unit_id').references(() => units.id, { onDelete: 'cascade' }),
+  lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+// Community members table
+export const communityMembers = pgTable('community_members', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  communityId: integer('community_id')
+    .notNull()
+    .references(() => communities.id, { onDelete: 'cascade' }),
+  enrolledAt: timestamp('enrolled_at').defaultNow(),
+})
+
+// Community threads table
+export const communityThreads = pgTable('community_threads', {
+  id: serial('id').primaryKey(),
+  communityId: integer('community_id')
+    .notNull()
+    .references(() => communities.id, { onDelete: 'cascade' }),
+  authorId: integer('author_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+// Community replies table
+export const communityReplies = pgTable('community_replies', {
+  id: serial('id').primaryKey(),
+  threadId: integer('thread_id')
+    .notNull()
+    .references(() => communityThreads.id, { onDelete: 'cascade' }),
+  authorId: integer('author_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
