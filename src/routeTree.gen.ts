@@ -13,10 +13,12 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SetupAdminRouteImport } from './routes/setup-admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CommunitiesRouteImport } from './routes/communities'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
+import { Route as CommunitiesCommunityIdRouteImport } from './routes/communities/$communityId'
 import { Route as ClassesClassIdRouteImport } from './routes/classes/$classId'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 import { Route as AdminClassesIndexRouteImport } from './routes/admin/classes/index'
@@ -30,6 +32,7 @@ import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.i
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
+import { Route as CommunitiesCommunityIdThreadsThreadIdRouteImport } from './routes/communities/$communityId/threads/$threadId'
 import { Route as ClassesClassIdUnitsUnitIdRouteImport } from './routes/classes/$classId/units/$unitId'
 import { Route as ClassesClassIdTestsTestIdRouteImport } from './routes/classes/$classId/tests/$testId'
 import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin/users/$userId/edit'
@@ -61,6 +64,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunitiesRoute = CommunitiesRouteImport.update({
+  id: '/communities',
+  path: '/communities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -80,6 +88,11 @@ const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   id: '/demo/drizzle',
   path: '/demo/drizzle',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CommunitiesCommunityIdRoute = CommunitiesCommunityIdRouteImport.update({
+  id: '/$communityId',
+  path: '/$communityId',
+  getParentRoute: () => CommunitiesRoute,
 } as any)
 const ClassesClassIdRoute = ClassesClassIdRouteImport.update({
   id: '/classes/$classId',
@@ -146,6 +159,12 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
   path: '/demo/start/ssr/data-only',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunitiesCommunityIdThreadsThreadIdRoute =
+  CommunitiesCommunityIdThreadsThreadIdRouteImport.update({
+    id: '/threads/$threadId',
+    path: '/threads/$threadId',
+    getParentRoute: () => CommunitiesCommunityIdRoute,
+  } as any)
 const ClassesClassIdUnitsUnitIdRoute =
   ClassesClassIdUnitsUnitIdRouteImport.update({
     id: '/units/$unitId',
@@ -207,11 +226,13 @@ const AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/communities': typeof CommunitiesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -227,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -240,11 +262,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/communities': typeof CommunitiesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -260,6 +284,7 @@ export interface FileRoutesByTo {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -274,11 +299,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/communities': typeof CommunitiesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -294,6 +321,7 @@ export interface FileRoutesById {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -309,11 +337,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/communities'
     | '/dashboard'
     | '/login'
     | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
+    | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -329,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -342,11 +373,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/communities'
     | '/dashboard'
     | '/login'
     | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
+    | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -362,6 +395,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -375,11 +409,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/communities'
     | '/dashboard'
     | '/login'
     | '/setup-admin'
     | '/signup'
     | '/classes/$classId'
+    | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -395,6 +431,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -409,6 +446,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CommunitiesRoute: typeof CommunitiesRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SetupAdminRoute: typeof SetupAdminRoute
@@ -468,6 +506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/communities': {
+      id: '/communities'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof CommunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -495,6 +540,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/drizzle'
       preLoaderRoute: typeof DemoDrizzleRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/communities/$communityId': {
+      id: '/communities/$communityId'
+      path: '/$communityId'
+      fullPath: '/communities/$communityId'
+      preLoaderRoute: typeof CommunitiesCommunityIdRouteImport
+      parentRoute: typeof CommunitiesRoute
     }
     '/classes/$classId': {
       id: '/classes/$classId'
@@ -587,6 +639,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/communities/$communityId/threads/$threadId': {
+      id: '/communities/$communityId/threads/$threadId'
+      path: '/threads/$threadId'
+      fullPath: '/communities/$communityId/threads/$threadId'
+      preLoaderRoute: typeof CommunitiesCommunityIdThreadsThreadIdRouteImport
+      parentRoute: typeof CommunitiesCommunityIdRoute
+    }
     '/classes/$classId/units/$unitId': {
       id: '/classes/$classId/units/$unitId'
       path: '/units/$unitId'
@@ -660,6 +719,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CommunitiesCommunityIdRouteChildren {
+  CommunitiesCommunityIdThreadsThreadIdRoute: typeof CommunitiesCommunityIdThreadsThreadIdRoute
+}
+
+const CommunitiesCommunityIdRouteChildren: CommunitiesCommunityIdRouteChildren =
+  {
+    CommunitiesCommunityIdThreadsThreadIdRoute:
+      CommunitiesCommunityIdThreadsThreadIdRoute,
+  }
+
+const CommunitiesCommunityIdRouteWithChildren =
+  CommunitiesCommunityIdRoute._addFileChildren(
+    CommunitiesCommunityIdRouteChildren,
+  )
+
+interface CommunitiesRouteChildren {
+  CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRouteWithChildren
+}
+
+const CommunitiesRouteChildren: CommunitiesRouteChildren = {
+  CommunitiesCommunityIdRoute: CommunitiesCommunityIdRouteWithChildren,
+}
+
+const CommunitiesRouteWithChildren = CommunitiesRoute._addFileChildren(
+  CommunitiesRouteChildren,
+)
+
 interface ClassesClassIdUnitsUnitIdRouteChildren {
   ClassesClassIdUnitsUnitIdLessonsLessonIdRoute: typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
 }
@@ -691,6 +777,7 @@ const ClassesClassIdRouteWithChildren = ClassesClassIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CommunitiesRoute: CommunitiesRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SetupAdminRoute: SetupAdminRoute,
