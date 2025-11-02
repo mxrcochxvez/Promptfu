@@ -59,9 +59,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (result.success && result.user) {
         setUser(result.user)
+        // Ensure cookie is set if we have a valid token
+        const token = localStorage.getItem('auth_token')
+        if (token) {
+          document.cookie = `auth_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 days
+        }
       } else {
         // Invalid token, remove it
         localStorage.removeItem('auth_token')
+        document.cookie = 'auth_token=; path=/; max-age=0'
       }
     } catch (error) {
       console.error('Session check failed:', error)
@@ -81,6 +87,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     if (result.token && result.user) {
       localStorage.setItem('auth_token', result.token)
+      // Also set cookie for server-side access
+      document.cookie = `auth_token=${result.token}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 days
       setUser(result.user)
       navigate({ to: '/dashboard' })
     }
@@ -103,6 +111,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     if (result.token && result.user) {
       localStorage.setItem('auth_token', result.token)
+      // Also set cookie for server-side access
+      document.cookie = `auth_token=${result.token}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 days
       setUser(result.user)
       navigate({ to: '/dashboard' })
     }
@@ -116,6 +126,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Logout request failed:', error)
     } finally {
       localStorage.removeItem('auth_token')
+      // Also remove cookie
+      document.cookie = 'auth_token=; path=/; max-age=0'
       setUser(null)
       navigate({ to: '/' })
     }
