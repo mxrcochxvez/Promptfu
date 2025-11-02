@@ -17,6 +17,104 @@ To build this application for production:
 pnpm build
 ```
 
+## Deployment to Netlify
+
+This application is configured for deployment to Netlify using the official TanStack Start Netlify plugin.
+
+### Prerequisites
+
+1. A Netlify account ([sign up here](https://app.netlify.com/signup))
+2. Your project pushed to a Git repository (GitHub, GitLab, or Bitbucket)
+3. A Neon PostgreSQL database (or any PostgreSQL database)
+4. A strong JWT secret for production
+
+### Deployment Steps
+
+#### Option 1: Deploy via Netlify Dashboard (Recommended)
+
+1. **Connect your repository:**
+   - Log in to [Netlify](https://app.netlify.com)
+   - Click "Add new site" → "Import an existing project"
+   - Connect your Git provider and select this repository
+
+2. **Configure build settings:**
+   - Netlify will auto-detect the build settings from `netlify.toml`
+   - Build command: `pnpm build`
+   - Publish directory: `dist/client`
+   - Node version: `20` (specified in `.nvmrc`)
+
+3. **Set environment variables:**
+   Go to Site settings → Environment variables and add:
+   ```
+   VITE_DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+   JWT_SECRET=your-strong-random-secret-key-here
+   JWT_EXPIRES_IN=7d
+   VITE_BASE_URL=https://your-site-name.netlify.app
+   ```
+
+4. **Deploy:**
+   - Click "Deploy site"
+   - Netlify will automatically build and deploy your application
+
+#### Option 2: Deploy via Netlify CLI
+
+1. **Install Netlify CLI:**
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **Login to Netlify:**
+   ```bash
+   netlify login
+   ```
+
+3. **Initialize and deploy:**
+   ```bash
+   netlify init
+   netlify deploy --prod
+   ```
+
+   During initialization, you'll be prompted to set environment variables.
+
+### Required Environment Variables
+
+Set these in your Netlify site settings (Site settings → Environment variables):
+
+- **`VITE_DATABASE_URL`** (Required): Your Neon PostgreSQL connection string
+  - Format: `postgresql://username:password@host:port/database?sslmode=require`
+  - Get this from your Neon dashboard
+
+- **`JWT_SECRET`** (Required): A strong, random string for signing JWT tokens
+  - Generate a secure secret: `openssl rand -base64 32`
+  - **Never commit this to version control**
+
+- **`JWT_EXPIRES_IN`** (Optional): JWT token expiration time
+  - Default: `7d` (7 days)
+  - Format: `1h`, `7d`, `30d`, etc.
+
+- **`VITE_BASE_URL`** (Optional): Base URL for your deployed site
+  - Used for generating absolute URLs in meta tags
+  - Format: `https://your-site-name.netlify.app`
+  - If not set, defaults to `https://promptfu.com`
+
+### Post-Deployment
+
+1. **Run database migrations:**
+   If you need to run database migrations, you can use the Netlify CLI or connect to your database directly:
+   ```bash
+   pnpm db:push
+   ```
+
+2. **Create your first admin user:**
+   - Visit `/setup-admin` on your deployed site, or
+   - Sign up normally and manually set `is_admin = true` in your database
+
+### Troubleshooting
+
+- **Build failures:** Check that all environment variables are set correctly
+- **Function errors:** Ensure `VITE_DATABASE_URL` is accessible from Netlify's servers
+- **Authentication issues:** Verify `JWT_SECRET` is set and matches between deployments
+
 ## Testing
 
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
