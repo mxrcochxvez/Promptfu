@@ -3,6 +3,7 @@ import { db } from './index'
 import {
   classes,
   units,
+  lessons,
   tests,
   testQuestions,
   enrollments,
@@ -32,6 +33,20 @@ export async function getUnitsByClassId(classId: number) {
 
 export async function getUnitById(unitId: number) {
   const result = await db.select().from(units).where(eq(units.id, unitId)).limit(1)
+  return result[0] || null
+}
+
+// Lesson queries
+export async function getLessonsByUnitId(unitId: number) {
+  return await db
+    .select()
+    .from(lessons)
+    .where(eq(lessons.unitId, unitId))
+    .orderBy(lessons.orderIndex)
+}
+
+export async function getLessonById(lessonId: number) {
+  const result = await db.select().from(lessons).where(eq(lessons.id, lessonId)).limit(1)
   return result[0] || null
 }
 
@@ -320,6 +335,36 @@ export async function updateUnit(
 
 export async function deleteUnit(unitId: number) {
   await db.delete(units).where(eq(units.id, unitId))
+}
+
+export async function createLesson(data: {
+  unitId: number
+  title: string
+  content: string
+  orderIndex: number
+}) {
+  const [newLesson] = await db.insert(lessons).values(data).returning()
+  return newLesson
+}
+
+export async function updateLesson(
+  lessonId: number,
+  data: {
+    title?: string
+    content?: string
+    orderIndex?: number
+  }
+) {
+  const [updated] = await db
+    .update(lessons)
+    .set(data)
+    .where(eq(lessons.id, lessonId))
+    .returning()
+  return updated
+}
+
+export async function deleteLesson(lessonId: number) {
+  await db.delete(lessons).where(eq(lessons.id, lessonId))
 }
 
 export async function createTest(data: {
