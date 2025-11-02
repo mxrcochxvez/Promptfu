@@ -11,6 +11,7 @@ import {
   BookOpen,
   Settings,
   Users,
+  MessageSquare,
 } from 'lucide-react'
 
 export default function Header() {
@@ -74,18 +75,32 @@ export default function Header() {
           )}
 
           {user && (
-            <Link
-              to="/dashboard"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-              activeProps={{
-                className:
-                  'flex items-center gap-3 p-3 rounded-lg bg-olive-600 hover:bg-olive-700 transition-colors mb-2',
-              }}
-            >
-              <LayoutDashboard size={20} />
-              <span className="font-medium">Dashboard</span>
-            </Link>
+            <>
+              <Link
+                to="/dashboard"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+                activeProps={{
+                  className:
+                    'flex items-center gap-3 p-3 rounded-lg bg-olive-600 hover:bg-olive-700 transition-colors mb-2',
+                }}
+              >
+                <LayoutDashboard size={20} />
+                <span className="font-medium">Dashboard</span>
+              </Link>
+              <Link
+                to="/communities"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+                activeProps={{
+                  className:
+                    'flex items-center gap-3 p-3 rounded-lg bg-olive-600 hover:bg-olive-700 transition-colors mb-2',
+                }}
+              >
+                <MessageSquare size={20} />
+                <span className="font-medium">Communities</span>
+              </Link>
+            </>
           )}
 
           {isAdmin && (
