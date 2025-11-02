@@ -745,7 +745,8 @@ export async function enrollUserInCommunity(userId: number, communityId: number)
 }
 
 export async function getCommunityThreads(communityId: number) {
-  return await db
+  // Get all threads with authors
+  const threadsWithAuthors = await db
     .select({
       thread: communityThreads,
       author: {
@@ -759,6 +760,31 @@ export async function getCommunityThreads(communityId: number) {
     .innerJoin(users, eq(communityThreads.authorId, users.id))
     .where(eq(communityThreads.communityId, communityId))
     .orderBy(desc(communityThreads.createdAt))
+
+  // Get reply counts for each thread
+  const threadIds = threadsWithAuthors.map((t: any) => t.thread.id)
+  const replyCounts: Record<number, number> = {}
+  
+  if (threadIds.length > 0) {
+    const counts = await db
+      .select({
+        threadId: communityReplies.threadId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(communityReplies)
+      .where(inArray(communityReplies.threadId, threadIds))
+      .groupBy(communityReplies.threadId)
+    
+    counts.forEach((c: any) => {
+      replyCounts[c.threadId] = c.count
+    })
+  }
+
+  // Add reply counts to threads
+  return threadsWithAuthors.map((item: any) => ({
+    ...item,
+    replyCount: replyCounts[item.thread.id] || 0,
+  }))
 }
 
 export async function getThreadById(threadId: number) {
@@ -814,6 +840,14 @@ export async function createReply(data: {
 }) {
   const [newReply] = await db.insert(communityReplies).values(data).returning()
   return newReply
+}
+
+export async function deleteThread(threadId: number) {
+  await db.delete(communityThreads).where(eq(communityThreads.id, threadId))
+}
+
+export async function deleteReply(replyId: number) {
+  await db.delete(communityReplies).where(eq(communityReplies.id, replyId))
 }
 
 export async function createGeneralCommunity(data: {
