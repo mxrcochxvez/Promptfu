@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext'
@@ -22,6 +22,10 @@ export const Route = createFileRoute('/communities')({
 
 function Communities() {
   const { user, isLoading } = useAuth()
+  const location = useLocation()
+
+  // Check if we're on a child route (community detail)
+  const isChildRoute = location.pathname !== '/communities' && location.pathname.startsWith('/communities/')
 
   const { data: communitiesData, isLoading: communitiesLoading } = useQuery({
     queryKey: ['userCommunities', user?.id],
@@ -39,6 +43,11 @@ function Communities() {
   const classCommunities = communities.filter((c: any) => c.type === 'class')
   const unitCommunities = communities.filter((c: any) => c.type === 'unit')
   const lessonCommunities = communities.filter((c: any) => c.type === 'lesson')
+
+  // If we're on a child route, render the outlet
+  if (isChildRoute) {
+    return <Outlet />
+  }
 
   if (isLoading) {
     return (
