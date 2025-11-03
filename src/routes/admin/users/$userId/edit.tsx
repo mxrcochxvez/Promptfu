@@ -311,10 +311,10 @@ function EditUserPage() {
 
   if (loadingUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-400 mx-auto mb-4"></div>
-          <p className="text-white">Loading user...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-olive-500/30 border-t-olive-500 mx-auto mb-4"></div>
+          <p className="text-neutral-300">Loading user...</p>
         </div>
       </div>
     )
@@ -322,12 +322,12 @@ function EditUserPage() {
 
   if (!userData) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <p className="text-white text-xl mb-4">User not found</p>
+          <p className="text-neutral-50 text-xl mb-4">User not found</p>
           <Link
             to="/admin/users"
-            className="text-olive-400 hover:text-olive-300"
+            className="text-accent-500 hover:text-accent-400 transition-colors duration-200 font-medium"
           >
             Back to Users
           </Link>
@@ -337,41 +337,42 @@ function EditUserPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link
             to="/admin/users"
-            className="inline-flex items-center gap-2 text-olive-400 hover:text-olive-300 mb-4"
+            className="inline-flex items-center gap-2 text-accent-500 hover:text-accent-400 mb-4 transition-colors duration-200 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-olive-500/10 p-2 rounded-lg">
-              <Edit className="w-6 h-6 text-olive-400" />
+            <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20">
+              <Edit className="w-5 h-5 text-olive-400" />
             </div>
-            <h1 className="text-4xl font-bold text-white">Edit User</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-neutral-50">Edit User</h1>
           </div>
-          <p className="text-gray-400">Update user information and permissions</p>
+          <p className="text-neutral-400">Update user information and permissions</p>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 space-y-6">
+        <div className="glass-effect border border-neutral-800/50 rounded-2xl p-8 space-y-6 card-shadow">
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400">
-              {error}
+            <div className="p-4 bg-error-500/10 border border-error-500/30 rounded-xl text-error-400 flex items-start gap-2">
+              <span className="font-semibold">Error:</span>
+              <span>{error}</span>
             </div>
           )}
 
           {/* Role Toggle */}
-          <div className="bg-slate-700/50 rounded-lg p-4">
+          <div className="bg-neutral-900/50 border border-neutral-800/50 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Shield className="w-5 h-5 text-purple-400" />
-                  <span className="font-medium text-white">Admin Status</span>
+                  <span className="font-medium text-neutral-50">Admin Status</span>
                 </div>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-neutral-400">
                   Grant or revoke administrator privileges
                 </p>
               </div>
@@ -380,8 +381,8 @@ function EditUserPage() {
                 disabled={isLoading}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   isAdmin
-                    ? 'bg-purple-500 hover:bg-purple-600 text-white'
-                    : 'bg-gray-600 hover:bg-gray-500 text-white'
+                    ? 'bg-accent-500 hover:bg-accent-600 text-white'
+                    : 'bg-neutral-600 hover:bg-neutral-500 text-white'
                 } disabled:opacity-50`}
               >
                 {isAdmin ? 'Admin' : 'User'}
@@ -394,7 +395,7 @@ function EditUserPage() {
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-neutral-300 mb-2"
                 >
                   First Name
                 </label>
@@ -403,14 +404,14 @@ function EditUserPage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                  className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                   placeholder="John"
                 />
               </div>
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-neutral-300 mb-2"
                 >
                   Last Name
                 </label>
@@ -419,7 +420,7 @@ function EditUserPage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                  className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                   placeholder="Doe"
                 />
               </div>
@@ -428,9 +429,9 @@ function EditUserPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-neutral-300 mb-2"
               >
-                Email <span className="text-red-400">*</span>
+                Email <span className="text-error-400">*</span>
               </label>
               <input
                 id="email"
@@ -438,7 +439,7 @@ function EditUserPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                 placeholder="user@example.com"
               />
             </div>
@@ -446,7 +447,7 @@ function EditUserPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-neutral-300 mb-2"
               >
                 New Password (leave blank to keep current)
               </label>
@@ -456,10 +457,10 @@ function EditUserPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 minLength={6}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                 placeholder="••••••••"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-neutral-500">
                 Minimum 6 characters. Only update if you want to change the password.
               </p>
             </div>
@@ -468,14 +469,14 @@ function EditUserPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Save className="w-5 h-5" />
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </button>
               <Link
                 to="/admin/users"
-                className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
+                className="px-6 py-3.5 glass-effect border border-neutral-800/50 hover:border-neutral-700/50 text-neutral-50 font-semibold rounded-xl transition-all duration-200"
               >
                 Cancel
               </Link>
@@ -483,21 +484,21 @@ function EditUserPage() {
           </form>
 
           {/* Class Enrollments Section */}
-          <div className="pt-6 border-t border-slate-700">
-            <div className="bg-slate-700/50 rounded-lg p-4">
+          <div className="pt-6 border-t border-neutral-800/50">
+            <div className="bg-neutral-900/50 border border-neutral-800/50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <BookOpen className="w-5 h-5 text-olive-400" />
-                    <span className="font-medium text-white">Class Enrollments</span>
+                    <span className="font-medium text-neutral-50">Class Enrollments</span>
                   </div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-neutral-400">
                     Manage user's class enrollments
                   </p>
                 </div>
                 <button
                   onClick={() => setShowEnrollmentModal(true)}
-                  className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-olive-500/20 hover:shadow-lg hover:shadow-olive-500/30 flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   Manage Enrollments
@@ -507,37 +508,37 @@ function EditUserPage() {
           </div>
 
           {/* Delete Section */}
-          <div className="pt-6 border-t border-slate-700">
-            <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4">
-              <h3 className="text-red-400 font-semibold mb-2">Danger Zone</h3>
-              <p className="text-sm text-gray-400 mb-4">
+          <div className="pt-6 border-t border-neutral-800/50">
+            <div className="bg-error-500/10 border border-error-500/30 rounded-xl p-4">
+              <h3 className="text-error-400 font-semibold mb-2">Danger Zone</h3>
+              <p className="text-sm text-neutral-400 mb-4">
                 Deleting a user will permanently remove their account and all associated data.
                 This action cannot be undone.
               </p>
               {!showDeleteConfirm ? (
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2.5 bg-error-600 hover:bg-error-700 text-white font-medium rounded-xl transition-colors flex items-center gap-2 shadow-md shadow-error-500/20 hover:shadow-lg hover:shadow-error-500/30"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete User
                 </button>
               ) : (
                 <div className="space-y-2">
-                  <p className="text-red-400 text-sm font-medium">
+                  <p className="text-error-400 text-sm font-medium">
                     Are you sure you want to delete this user?
                   </p>
                   <div className="flex gap-2">
                     <button
                       onClick={handleDelete}
                       disabled={isLoading}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+                      className="px-4 py-2.5 bg-error-600 hover:bg-error-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
                     >
                       Yes, Delete
                     </button>
                     <button
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors"
+                      className="px-6 py-3.5 glass-effect border border-neutral-800/50 hover:border-neutral-700/50 text-neutral-50 font-semibold rounded-xl transition-all duration-200"
                     >
                       Cancel
                     </button>
@@ -551,15 +552,15 @@ function EditUserPage() {
 
       {/* Enrollment Modal */}
       {showEnrollmentModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-effect border border-neutral-800/50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto card-shadow">
+            <div className="sticky top-0 glass-effect border-b border-neutral-800/50 px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h2 className="text-2xl font-bold text-neutral-50 flex items-center gap-2">
                   <BookOpen className="w-6 h-6 text-olive-400" />
                   Manage Class Enrollments
                 </h2>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-neutral-400 mt-1">
                   Enroll or unenroll user from classes
                 </p>
               </div>
@@ -569,22 +570,22 @@ function EditUserPage() {
                   setEnrollmentError('')
                   setSelectedClassId('')
                 }}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                className="p-2 hover:bg-neutral-800/50 rounded-lg transition-all duration-200 hover:scale-110 focus-ring"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-neutral-300" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
               {enrollmentError && (
-                <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400">
+                <div className="p-4 bg-error-500/10 border border-error-500/30 rounded-xl text-error-400">
                   {enrollmentError}
                 </div>
               )}
 
               {/* Add Enrollment */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2.5">
                   Enroll in New Class
                 </label>
                 <div className="flex gap-2">
@@ -592,7 +593,7 @@ function EditUserPage() {
                     value={selectedClassId}
                     onChange={(e) => setSelectedClassId(e.target.value)}
                     disabled={loadingClasses || enrollMutation.isPending}
-                    className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500 disabled:opacity-50"
+                    className="flex-1 px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200 disabled:opacity-50"
                   >
                     <option value="">Select a class...</option>
                     {allClasses &&
@@ -614,11 +615,11 @@ function EditUserPage() {
                       loadingClasses ||
                       enrollMutation.isPending
                     }
-                    className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-4 py-3 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md shadow-olive-500/20 hover:shadow-lg hover:shadow-olive-500/30"
                   >
                     {enrollMutation.isPending ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         Enrolling...
                       </>
                     ) : (
@@ -633,34 +634,34 @@ function EditUserPage() {
 
               {/* Current Enrollments */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4">
+                <h3 className="text-lg font-bold text-neutral-50 mb-4">
                   Current Enrollments
                 </h3>
                 {loadingEnrollments ? (
-                  <div className="text-gray-400 py-4 text-center">
+                  <div className="text-neutral-400 py-4 text-center">
                     Loading enrollments...
                   </div>
                 ) : !enrollments || enrollments.length === 0 ? (
-                  <div className="text-gray-400 py-4 text-center">
+                  <div className="text-neutral-400 py-4 text-center">
                     No enrollments found
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {enrollments.map((enrollment) => (
                       <div
                         key={enrollment.enrollment.id}
-                        className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-600"
+                        className="flex items-center justify-between p-4 bg-neutral-900/50 rounded-xl border border-neutral-800/50"
                       >
                         <div>
-                          <div className="font-medium text-white">
+                          <div className="font-bold text-neutral-50">
                             {enrollment.class.title}
                           </div>
                           {enrollment.class.description && (
-                            <div className="text-sm text-gray-400 mt-1">
+                            <div className="text-sm text-neutral-400 mt-1">
                               {enrollment.class.description}
                             </div>
                           )}
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-neutral-500 mt-1">
                             Enrolled:{' '}
                             {enrollment.enrollment.enrolledAt
                               ? new Date(
@@ -672,11 +673,11 @@ function EditUserPage() {
                         <button
                           onClick={() => handleUnenroll(enrollment.class.id)}
                           disabled={unenrollMutation.isPending}
-                          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                          className="px-4 py-2.5 bg-error-600 hover:bg-error-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                           {unenrollMutation.isPending ? (
                             <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                              <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             </>
                           ) : (
                             <>
@@ -692,14 +693,14 @@ function EditUserPage() {
               </div>
             </div>
 
-            <div className="sticky bottom-0 bg-slate-800 border-t border-slate-700 px-6 py-4 flex justify-end">
+            <div className="sticky bottom-0 glass-effect border-t border-neutral-800/50 px-6 py-4 flex justify-end">
               <button
                 onClick={() => {
                   setShowEnrollmentModal(false)
                   setEnrollmentError('')
                   setSelectedClassId('')
                 }}
-                className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors"
+                className="px-6 py-3.5 glass-effect border border-neutral-800/50 hover:border-neutral-700/50 text-neutral-50 font-semibold rounded-xl transition-all duration-200"
               >
                 Close
               </button>

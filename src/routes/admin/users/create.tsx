@@ -86,29 +86,30 @@ function CreateUserPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link
             to="/admin/users"
-            className="inline-flex items-center gap-2 text-olive-400 hover:text-olive-300 mb-4"
+            className="inline-flex items-center gap-2 text-accent-500 hover:text-accent-400 mb-4 transition-colors duration-200 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-olive-500/10 p-2 rounded-lg">
-              <UserPlus className="w-6 h-6 text-olive-400" />
+            <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20">
+              <UserPlus className="w-5 h-5 text-olive-400" />
             </div>
-            <h1 className="text-4xl font-bold text-white">Create New User</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-neutral-50">Create New User</h1>
           </div>
-          <p className="text-gray-400">Add a new user to the platform</p>
+          <p className="text-neutral-400">Add a new user to the platform</p>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8">
+        <div className="glass-effect border border-neutral-800/50 rounded-2xl p-8 card-shadow">
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400">
-              {error}
+            <div className="mb-6 p-4 bg-error-500/10 border border-error-500/30 rounded-xl text-error-400 flex items-start gap-2">
+              <span className="font-semibold">Error:</span>
+              <span>{error}</span>
             </div>
           )}
 
@@ -117,7 +118,7 @@ function CreateUserPage() {
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-neutral-300 mb-2.5"
                 >
                   First Name
                 </label>
@@ -126,14 +127,14 @@ function CreateUserPage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                  className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                   placeholder="John"
                 />
               </div>
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-neutral-300 mb-2.5"
                 >
                   Last Name
                 </label>
@@ -142,7 +143,7 @@ function CreateUserPage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                  className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                   placeholder="Doe"
                 />
               </div>
@@ -183,7 +184,7 @@ function CreateUserPage() {
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
                 placeholder="••••••••"
               />
-              <p className="mt-1 text-xs text-gray-500">Minimum 6 characters</p>
+              <p className="mt-2 text-xs text-neutral-500">Minimum 6 characters</p>
             </div>
 
             <div className="flex items-center">
@@ -192,9 +193,9 @@ function CreateUserPage() {
                 type="checkbox"
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
-                className="w-4 h-4 text-olive-600 bg-slate-700 border-slate-600 rounded focus:ring-olive-500 focus:ring-2"
+                className="w-4 h-4 text-olive-600 bg-neutral-900/50 border-neutral-800 rounded focus:ring-olive-500 focus:ring-2"
               />
-              <label htmlFor="isAdmin" className="ml-2 text-sm text-gray-300">
+              <label htmlFor="isAdmin" className="ml-2 text-sm text-neutral-300">
                 Grant admin privileges
               </label>
             </div>
@@ -203,13 +204,13 @@ function CreateUserPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isLoading ? 'Creating...' : 'Create User'}
               </button>
               <Link
                 to="/admin/users"
-                className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
+                className="px-6 py-3.5 glass-effect border border-neutral-800/50 hover:border-neutral-700/50 text-neutral-50 font-semibold rounded-xl transition-all duration-200"
               >
                 Cancel
               </Link>
