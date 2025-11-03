@@ -27,8 +27,8 @@ export default function FeedbackForm({
 
   if (!user) {
     return (
-      <div className={`bg-slate-800 border border-slate-700 rounded-lg p-6 ${className}`}>
-        <p className="text-gray-400">Please sign in to provide feedback.</p>
+      <div className={`glass-effect border border-neutral-800/50 rounded-2xl p-6 card-shadow ${className}`}>
+        <p className="text-neutral-400">Please sign in to provide feedback.</p>
       </div>
     )
   }
@@ -92,43 +92,45 @@ export default function FeedbackForm({
   const resourceContext = getResourceContext()
 
   return (
-    <div className={`bg-slate-800 border border-slate-700 rounded-lg p-6 ${className}`}>
-      <div className="flex items-center gap-2 mb-4">
-        <MessageSquare className="w-5 h-5 text-olive-400" />
-        <h3 className="text-lg font-semibold text-white">Provide Feedback</h3>
+    <div className={`glass-effect border border-neutral-800/50 rounded-2xl p-6 card-shadow ${className}`}>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20">
+          <MessageSquare className="w-5 h-5 text-olive-400" />
+        </div>
+        <h3 className="text-lg font-bold text-neutral-50">Provide Feedback</h3>
       </div>
 
       {resourceContext && (
-        <div className="mb-4 p-3 bg-slate-700/50 border border-slate-600 rounded-lg">
-          <p className="text-sm text-gray-300">
-            Providing feedback for this <span className="font-medium capitalize">{resourceContext}</span>
+        <div className="mb-6 p-4 bg-neutral-900/50 border border-neutral-800/50 rounded-xl">
+          <p className="text-sm text-neutral-300">
+            Providing feedback for this <span className="font-semibold capitalize">{resourceContext}</span>
           </p>
         </div>
       )}
 
       {message && (
         <div
-          className={`mb-4 p-3 rounded-lg text-sm ${
+          className={`mb-6 p-4 rounded-xl text-sm ${
             message.type === 'success'
-              ? 'bg-green-500/10 border border-green-500/50 text-green-400'
-              : 'bg-red-500/10 border border-red-500/50 text-red-400'
+              ? 'bg-success-500/10 border border-success-500/30 text-success-400'
+              : 'bg-error-500/10 border border-error-500/30 text-error-400'
           }`}
         >
           {message.text}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-3">
             Feedback Type
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label
-              className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
+              className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 feedbackType === 'coursework'
-                  ? 'bg-olive-500/20 border-olive-500'
-                  : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
+                  ? 'bg-olive-500/20 border-olive-500/40 shadow-md shadow-olive-500/10'
+                  : 'bg-neutral-900/50 border-neutral-800/50 hover:border-neutral-700/50'
               }`}
             >
               <input
@@ -137,16 +139,16 @@ export default function FeedbackForm({
                 value="coursework"
                 checked={feedbackType === 'coursework'}
                 onChange={(e) => setFeedbackType(e.target.value as 'bug' | 'coursework')}
-                className="mr-2"
+                className="hidden"
               />
-              <BookOpen className="w-4 h-4 text-olive-400" />
-              <span className="text-gray-200">Coursework</span>
+              <BookOpen className={`w-5 h-5 ${feedbackType === 'coursework' ? 'text-olive-400' : 'text-neutral-400'}`} />
+              <span className={`font-medium ${feedbackType === 'coursework' ? 'text-neutral-50' : 'text-neutral-300'}`}>Coursework</span>
             </label>
             <label
-              className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
+              className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 feedbackType === 'bug'
-                  ? 'bg-olive-500/20 border-olive-500'
-                  : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
+                  ? 'bg-error-500/20 border-error-500/40 shadow-md shadow-error-500/10'
+                  : 'bg-neutral-900/50 border-neutral-800/50 hover:border-neutral-700/50'
               }`}
             >
               <input
@@ -155,22 +157,22 @@ export default function FeedbackForm({
                 value="bug"
                 checked={feedbackType === 'bug'}
                 onChange={(e) => setFeedbackType(e.target.value as 'bug' | 'coursework')}
-                className="mr-2"
+                className="hidden"
               />
-              <Bug className="w-4 h-4 text-red-400" />
-              <span className="text-gray-200">Bug</span>
+              <Bug className={`w-5 h-5 ${feedbackType === 'bug' ? 'text-error-400' : 'text-neutral-400'}`} />
+              <span className={`font-medium ${feedbackType === 'bug' ? 'text-neutral-50' : 'text-neutral-300'}`}>Bug</span>
             </label>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Sentiment</label>
+          <label className="block text-sm font-medium text-neutral-300 mb-3">Sentiment</label>
           <div className="grid grid-cols-2 gap-3">
             <label
-              className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
+              className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 sentiment === 'positive'
-                  ? 'bg-green-500/20 border-green-500'
-                  : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
+                  ? 'bg-success-500/20 border-success-500/40 shadow-md shadow-success-500/10'
+                  : 'bg-neutral-900/50 border-neutral-800/50 hover:border-neutral-700/50'
               }`}
             >
               <input
@@ -179,16 +181,16 @@ export default function FeedbackForm({
                 value="positive"
                 checked={sentiment === 'positive'}
                 onChange={(e) => setSentiment(e.target.value as 'positive' | 'negative')}
-                className="mr-2"
+                className="hidden"
               />
-              <ThumbsUp className="w-4 h-4 text-green-400" />
-              <span className="text-gray-200">Positive</span>
+              <ThumbsUp className={`w-5 h-5 ${sentiment === 'positive' ? 'text-success-400' : 'text-neutral-400'}`} />
+              <span className={`font-medium ${sentiment === 'positive' ? 'text-neutral-50' : 'text-neutral-300'}`}>Positive</span>
             </label>
             <label
-              className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
+              className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 sentiment === 'negative'
-                  ? 'bg-red-500/20 border-red-500'
-                  : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'
+                  ? 'bg-error-500/20 border-error-500/40 shadow-md shadow-error-500/10'
+                  : 'bg-neutral-900/50 border-neutral-800/50 hover:border-neutral-700/50'
               }`}
             >
               <input
@@ -197,16 +199,16 @@ export default function FeedbackForm({
                 value="negative"
                 checked={sentiment === 'negative'}
                 onChange={(e) => setSentiment(e.target.value as 'positive' | 'negative')}
-                className="mr-2"
+                className="hidden"
               />
-              <ThumbsDown className="w-4 h-4 text-red-400" />
-              <span className="text-gray-200">Negative</span>
+              <ThumbsDown className={`w-5 h-5 ${sentiment === 'negative' ? 'text-error-400' : 'text-neutral-400'}`} />
+              <span className={`font-medium ${sentiment === 'negative' ? 'text-neutral-50' : 'text-neutral-300'}`}>Negative</span>
             </label>
           </div>
         </div>
 
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="content" className="block text-sm font-medium text-neutral-300 mb-2.5">
             Feedback
           </label>
           <textarea
@@ -215,7 +217,7 @@ export default function FeedbackForm({
             onChange={(e) => setContent(e.target.value)}
             required
             rows={4}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500 resize-none"
+            className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200 resize-none"
             placeholder="Share your thoughts, suggestions, or report issues..."
           />
         </div>
@@ -223,11 +225,11 @@ export default function FeedbackForm({
         <button
           type="submit"
           disabled={isSubmitting || !content.trim()}
-          className="w-full px-4 py-2 bg-olive-500 hover:bg-olive-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full px-4 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 disabled:from-neutral-700 disabled:to-neutral-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
             <>
-              <span className="animate-spin">⏳</span>
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
               <span>Submitting...</span>
             </>
           ) : (
