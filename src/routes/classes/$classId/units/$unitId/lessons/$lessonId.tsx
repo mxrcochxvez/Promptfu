@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useAuth } from '../../../../../../contexts/AuthContext'
 import MarkdownRenderer from '../../../../../../components/MarkdownRenderer'
 import RightSidebar from '../../../../../../components/RightSidebar'
@@ -135,6 +136,17 @@ function LessonView() {
       queryClient.invalidateQueries({ queryKey: ['enrolledClasses'] })
     },
   })
+
+  // Scroll to top when lesson changes
+  useEffect(() => {
+    if (!lessonLoading && lesson) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [lessonId, lessonLoading, lesson])
+
+  const handleNextLessonClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   if (lessonLoading) {
     return (
@@ -275,6 +287,7 @@ function LessonView() {
             <Link
               to="/classes/$classId/units/$unitId/lessons/$lessonId"
               params={{ classId, unitId, lessonId: nextLesson.id.toString() }}
+              onClick={handleNextLessonClick}
               className="flex items-center gap-2 text-olive-400 hover:text-olive-300"
             >
               Next Lesson
