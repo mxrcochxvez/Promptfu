@@ -19,7 +19,9 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-qu
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as CommunitiesCommunityIdRouteImport } from './routes/communities/$communityId'
+import { Route as ClassesSlugRouteImport } from './routes/classes/$slug'
 import { Route as ClassesClassIdRouteImport } from './routes/classes/$classId'
+import { Route as AdminFeedbackRouteImport } from './routes/admin/feedback'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 import { Route as AdminClassesIndexRouteImport } from './routes/admin/classes/index'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
@@ -33,12 +35,15 @@ import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 import { Route as CommunitiesCommunityIdThreadsThreadIdRouteImport } from './routes/communities/$communityId/threads/$threadId'
+import { Route as ClassesSlugUnitsUnitIdRouteImport } from './routes/classes/$slug/units/$unitId'
+import { Route as ClassesSlugTestsTestIdRouteImport } from './routes/classes/$slug/tests/$testId'
 import { Route as ClassesClassIdUnitsUnitIdRouteImport } from './routes/classes/$classId/units/$unitId'
 import { Route as ClassesClassIdTestsTestIdRouteImport } from './routes/classes/$classId/tests/$testId'
 import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin/users/$userId/edit'
 import { Route as AdminClassesClassIdEditRouteImport } from './routes/admin/classes/$classId/edit'
 import { Route as AdminClassesClassIdUnitsCreateRouteImport } from './routes/admin/classes/$classId/units/create'
 import { Route as AdminClassesClassIdTestsCreateRouteImport } from './routes/admin/classes/$classId/tests/create'
+import { Route as ClassesSlugUnitsUnitIdLessonsLessonIdRouteImport } from './routes/classes/$slug/units/$unitId/lessons/$lessonId'
 import { Route as ClassesClassIdUnitsUnitIdLessonsLessonIdRouteImport } from './routes/classes/$classId/units/$unitId/lessons/$lessonId'
 import { Route as AdminClassesClassIdUnitsUnitIdEditRouteImport } from './routes/admin/classes/$classId/units/$unitId/edit'
 import { Route as AdminClassesClassIdUnitsUnitIdLessonsCreateRouteImport } from './routes/admin/classes/$classId/units/$unitId/lessons/create'
@@ -94,9 +99,19 @@ const CommunitiesCommunityIdRoute = CommunitiesCommunityIdRouteImport.update({
   path: '/$communityId',
   getParentRoute: () => CommunitiesRoute,
 } as any)
+const ClassesSlugRoute = ClassesSlugRouteImport.update({
+  id: '/classes/$slug',
+  path: '/classes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClassesClassIdRoute = ClassesClassIdRouteImport.update({
   id: '/classes/$classId',
   path: '/classes/$classId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFeedbackRoute = AdminFeedbackRouteImport.update({
+  id: '/admin/feedback',
+  path: '/admin/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
@@ -165,6 +180,16 @@ const CommunitiesCommunityIdThreadsThreadIdRoute =
     path: '/threads/$threadId',
     getParentRoute: () => CommunitiesCommunityIdRoute,
   } as any)
+const ClassesSlugUnitsUnitIdRoute = ClassesSlugUnitsUnitIdRouteImport.update({
+  id: '/units/$unitId',
+  path: '/units/$unitId',
+  getParentRoute: () => ClassesSlugRoute,
+} as any)
+const ClassesSlugTestsTestIdRoute = ClassesSlugTestsTestIdRouteImport.update({
+  id: '/tests/$testId',
+  path: '/tests/$testId',
+  getParentRoute: () => ClassesSlugRoute,
+} as any)
 const ClassesClassIdUnitsUnitIdRoute =
   ClassesClassIdUnitsUnitIdRouteImport.update({
     id: '/units/$unitId',
@@ -199,6 +224,12 @@ const AdminClassesClassIdTestsCreateRoute =
     path: '/admin/classes/$classId/tests/create',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ClassesSlugUnitsUnitIdLessonsLessonIdRoute =
+  ClassesSlugUnitsUnitIdLessonsLessonIdRouteImport.update({
+    id: '/lessons/$lessonId',
+    path: '/lessons/$lessonId',
+    getParentRoute: () => ClassesSlugUnitsUnitIdRoute,
+  } as any)
 const ClassesClassIdUnitsUnitIdLessonsLessonIdRoute =
   ClassesClassIdUnitsUnitIdLessonsLessonIdRouteImport.update({
     id: '/lessons/$lessonId',
@@ -231,7 +262,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/classes/$slug': typeof ClassesSlugRouteWithChildren
   '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -248,6 +281,8 @@ export interface FileRoutesByFullPath {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/classes/$slug/tests/$testId': typeof ClassesSlugTestsTestIdRoute
+  '/classes/$slug/units/$unitId': typeof ClassesSlugUnitsUnitIdRouteWithChildren
   '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
@@ -257,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
   '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
+  '/classes/$slug/units/$unitId/lessons/$lessonId': typeof ClassesSlugUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -267,7 +303,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/classes/$slug': typeof ClassesSlugRouteWithChildren
   '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -284,6 +322,8 @@ export interface FileRoutesByTo {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/classes/$slug/tests/$testId': typeof ClassesSlugTestsTestIdRoute
+  '/classes/$slug/units/$unitId': typeof ClassesSlugUnitsUnitIdRouteWithChildren
   '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
@@ -293,6 +333,7 @@ export interface FileRoutesByTo {
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
   '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
+  '/classes/$slug/units/$unitId/lessons/$lessonId': typeof ClassesSlugUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -304,7 +345,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/setup-admin': typeof SetupAdminRoute
   '/signup': typeof SignupRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/classes/$classId': typeof ClassesClassIdRouteWithChildren
+  '/classes/$slug': typeof ClassesSlugRouteWithChildren
   '/communities/$communityId': typeof CommunitiesCommunityIdRouteWithChildren
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -321,6 +364,8 @@ export interface FileRoutesById {
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/classes/$classId/tests/$testId': typeof ClassesClassIdTestsTestIdRoute
   '/classes/$classId/units/$unitId': typeof ClassesClassIdUnitsUnitIdRouteWithChildren
+  '/classes/$slug/tests/$testId': typeof ClassesSlugTestsTestIdRoute
+  '/classes/$slug/units/$unitId': typeof ClassesSlugUnitsUnitIdRouteWithChildren
   '/communities/$communityId/threads/$threadId': typeof CommunitiesCommunityIdThreadsThreadIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
@@ -330,6 +375,7 @@ export interface FileRoutesById {
   '/admin/classes/$classId/units/create': typeof AdminClassesClassIdUnitsCreateRoute
   '/admin/classes/$classId/units/$unitId/edit': typeof AdminClassesClassIdUnitsUnitIdEditRoute
   '/classes/$classId/units/$unitId/lessons/$lessonId': typeof ClassesClassIdUnitsUnitIdLessonsLessonIdRoute
+  '/classes/$slug/units/$unitId/lessons/$lessonId': typeof ClassesSlugUnitsUnitIdLessonsLessonIdRoute
   '/admin/classes/$classId/units/$unitId/lessons/create': typeof AdminClassesClassIdUnitsUnitIdLessonsCreateRoute
   '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit': typeof AdminClassesClassIdUnitsUnitIdLessonsLessonIdEditRoute
 }
@@ -342,7 +388,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup-admin'
     | '/signup'
+    | '/admin/feedback'
     | '/classes/$classId'
+    | '/classes/$slug'
     | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -359,6 +407,8 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/classes/$slug/tests/$testId'
+    | '/classes/$slug/units/$unitId'
     | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
@@ -368,6 +418,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
     | '/classes/$classId/units/$unitId/lessons/$lessonId'
+    | '/classes/$slug/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -378,7 +429,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup-admin'
     | '/signup'
+    | '/admin/feedback'
     | '/classes/$classId'
+    | '/classes/$slug'
     | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -395,6 +448,8 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/classes/$slug/tests/$testId'
+    | '/classes/$slug/units/$unitId'
     | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
@@ -404,6 +459,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
     | '/classes/$classId/units/$unitId/lessons/$lessonId'
+    | '/classes/$slug/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   id:
@@ -414,7 +470,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup-admin'
     | '/signup'
+    | '/admin/feedback'
     | '/classes/$classId'
+    | '/classes/$slug'
     | '/communities/$communityId'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -431,6 +489,8 @@ export interface FileRouteTypes {
     | '/admin/users/$userId/edit'
     | '/classes/$classId/tests/$testId'
     | '/classes/$classId/units/$unitId'
+    | '/classes/$slug/tests/$testId'
+    | '/classes/$slug/units/$unitId'
     | '/communities/$communityId/threads/$threadId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
@@ -440,6 +500,7 @@ export interface FileRouteTypes {
     | '/admin/classes/$classId/units/create'
     | '/admin/classes/$classId/units/$unitId/edit'
     | '/classes/$classId/units/$unitId/lessons/$lessonId'
+    | '/classes/$slug/units/$unitId/lessons/$lessonId'
     | '/admin/classes/$classId/units/$unitId/lessons/create'
     | '/admin/classes/$classId/units/$unitId/lessons/$lessonId/edit'
   fileRoutesById: FileRoutesById
@@ -451,7 +512,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SetupAdminRoute: typeof SetupAdminRoute
   SignupRoute: typeof SignupRoute
+  AdminFeedbackRoute: typeof AdminFeedbackRoute
   ClassesClassIdRoute: typeof ClassesClassIdRouteWithChildren
+  ClassesSlugRoute: typeof ClassesSlugRouteWithChildren
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -548,11 +611,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesCommunityIdRouteImport
       parentRoute: typeof CommunitiesRoute
     }
+    '/classes/$slug': {
+      id: '/classes/$slug'
+      path: '/classes/$slug'
+      fullPath: '/classes/$slug'
+      preLoaderRoute: typeof ClassesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/classes/$classId': {
       id: '/classes/$classId'
       path: '/classes/$classId'
       fullPath: '/classes/$classId'
       preLoaderRoute: typeof ClassesClassIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/feedback': {
+      id: '/admin/feedback'
+      path: '/admin/feedback'
+      fullPath: '/admin/feedback'
+      preLoaderRoute: typeof AdminFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/users/': {
@@ -646,6 +723,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesCommunityIdThreadsThreadIdRouteImport
       parentRoute: typeof CommunitiesCommunityIdRoute
     }
+    '/classes/$slug/units/$unitId': {
+      id: '/classes/$slug/units/$unitId'
+      path: '/units/$unitId'
+      fullPath: '/classes/$slug/units/$unitId'
+      preLoaderRoute: typeof ClassesSlugUnitsUnitIdRouteImport
+      parentRoute: typeof ClassesSlugRoute
+    }
+    '/classes/$slug/tests/$testId': {
+      id: '/classes/$slug/tests/$testId'
+      path: '/tests/$testId'
+      fullPath: '/classes/$slug/tests/$testId'
+      preLoaderRoute: typeof ClassesSlugTestsTestIdRouteImport
+      parentRoute: typeof ClassesSlugRoute
+    }
     '/classes/$classId/units/$unitId': {
       id: '/classes/$classId/units/$unitId'
       path: '/units/$unitId'
@@ -687,6 +778,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/classes/$classId/tests/create'
       preLoaderRoute: typeof AdminClassesClassIdTestsCreateRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/classes/$slug/units/$unitId/lessons/$lessonId': {
+      id: '/classes/$slug/units/$unitId/lessons/$lessonId'
+      path: '/lessons/$lessonId'
+      fullPath: '/classes/$slug/units/$unitId/lessons/$lessonId'
+      preLoaderRoute: typeof ClassesSlugUnitsUnitIdLessonsLessonIdRouteImport
+      parentRoute: typeof ClassesSlugUnitsUnitIdRoute
     }
     '/classes/$classId/units/$unitId/lessons/$lessonId': {
       id: '/classes/$classId/units/$unitId/lessons/$lessonId'
@@ -775,6 +873,35 @@ const ClassesClassIdRouteWithChildren = ClassesClassIdRoute._addFileChildren(
   ClassesClassIdRouteChildren,
 )
 
+interface ClassesSlugUnitsUnitIdRouteChildren {
+  ClassesSlugUnitsUnitIdLessonsLessonIdRoute: typeof ClassesSlugUnitsUnitIdLessonsLessonIdRoute
+}
+
+const ClassesSlugUnitsUnitIdRouteChildren: ClassesSlugUnitsUnitIdRouteChildren =
+  {
+    ClassesSlugUnitsUnitIdLessonsLessonIdRoute:
+      ClassesSlugUnitsUnitIdLessonsLessonIdRoute,
+  }
+
+const ClassesSlugUnitsUnitIdRouteWithChildren =
+  ClassesSlugUnitsUnitIdRoute._addFileChildren(
+    ClassesSlugUnitsUnitIdRouteChildren,
+  )
+
+interface ClassesSlugRouteChildren {
+  ClassesSlugTestsTestIdRoute: typeof ClassesSlugTestsTestIdRoute
+  ClassesSlugUnitsUnitIdRoute: typeof ClassesSlugUnitsUnitIdRouteWithChildren
+}
+
+const ClassesSlugRouteChildren: ClassesSlugRouteChildren = {
+  ClassesSlugTestsTestIdRoute: ClassesSlugTestsTestIdRoute,
+  ClassesSlugUnitsUnitIdRoute: ClassesSlugUnitsUnitIdRouteWithChildren,
+}
+
+const ClassesSlugRouteWithChildren = ClassesSlugRoute._addFileChildren(
+  ClassesSlugRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CommunitiesRoute: CommunitiesRouteWithChildren,
@@ -782,7 +909,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SetupAdminRoute: SetupAdminRoute,
   SignupRoute: SignupRoute,
+  AdminFeedbackRoute: AdminFeedbackRoute,
   ClassesClassIdRoute: ClassesClassIdRouteWithChildren,
+  ClassesSlugRoute: ClassesSlugRouteWithChildren,
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
