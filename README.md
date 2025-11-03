@@ -1,4 +1,6 @@
-Welcome to your new TanStack app! 
+Welcome to Promptfu LMS! 
+
+> **📚 Comprehensive Documentation**: See [docs/README.md](./docs/README.md) for complete documentation including architecture, development guides, API reference, and AI-specific guides.
 
 # Getting Started
 
