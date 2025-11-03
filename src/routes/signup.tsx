@@ -38,30 +38,31 @@ function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-8 w-full max-w-md shadow-2xl">
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+      <div className="glass-effect rounded-2xl p-8 md:p-10 w-full max-w-md card-shadow">
         <div className="flex justify-center mb-6">
-          <div className="bg-olive-500/10 p-3 rounded-full">
+          <div className="bg-gradient-to-br from-olive-500/20 to-accent-500/20 p-4 rounded-2xl border border-olive-500/30">
             <UserPlus className="w-8 h-8 text-olive-400" />
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-white text-center mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-neutral-50 text-center mb-2">
           Create Account
         </h1>
-        <p className="text-gray-400 text-center mb-8">
+        <p className="text-neutral-400 text-center mb-8 text-sm md:text-base">
           Join Promptfu and start learning
         </p>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-            {error}
+          <div className="mb-6 p-4 bg-error-500/10 border border-error-500/30 rounded-xl text-error-400 text-sm flex items-start gap-2">
+            <span className="font-semibold">Error:</span>
+            <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="firstName" className="block text-sm font-medium text-neutral-300 mb-2.5">
                 First Name
               </label>
               <input
@@ -69,12 +70,12 @@ function SignupPage() {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                 placeholder="John"
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="lastName" className="block text-sm font-medium text-neutral-300 mb-2.5">
                 Last Name
               </label>
               <input
@@ -82,15 +83,15 @@ function SignupPage() {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+                className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                 placeholder="Doe"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              Email
+            <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2.5">
+              Email Address
             </label>
             <input
               id="email"
@@ -98,13 +99,13 @@ function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
+              className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2.5">
               Password
             </label>
             <input
@@ -114,27 +115,34 @@ function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-olive-500"
-              placeholder="••••••••"
+              className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
+              placeholder="Enter your password"
             />
-            <p className="mt-1 text-xs text-gray-500">At least 6 characters</p>
+            <p className="mt-2 text-xs text-neutral-500">At least 6 characters</p>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
           >
-            {isLoading ? 'Creating account...' : 'Sign Up'}
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                Creating account...
+              </span>
+            ) : (
+              'Sign Up'
+            )}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-400 text-sm">
+        <div className="mt-8 text-center">
+          <p className="text-neutral-400 text-sm">
             Already have an account?{' '}
             <a
               href="/login"
-              className="text-olive-400 hover:text-olive-300 font-medium"
+              className="text-accent-500 hover:text-accent-400 font-semibold transition-colors duration-200 underline underline-offset-2"
             >
               Sign in
             </a>
