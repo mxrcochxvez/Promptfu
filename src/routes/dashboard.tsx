@@ -102,10 +102,10 @@ function Dashboard() {
   // Show loading state while auth is being determined
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-400 mx-auto mb-4"></div>
-          <p className="text-white">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-olive-500/30 border-t-olive-500 mx-auto mb-4"></div>
+          <p className="text-neutral-300">Loading...</p>
         </div>
       </div>
     )
@@ -113,53 +113,69 @@ function Dashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-xl mb-4">Please sign in to view your dashboard</p>
-          <p className="text-gray-400 text-sm">You will be redirected automatically...</p>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center glass-effect rounded-2xl p-8 card-shadow">
+          <p className="text-neutral-50 text-xl mb-4 font-semibold">Please sign in to view your dashboard</p>
+          <p className="text-neutral-400 text-sm">You will be redirected automatically...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl md:text-4xl font-bold text-neutral-50 mb-2">Dashboard</h1>
+          <p className="text-neutral-400 text-base md:text-lg">
             Welcome back, {user.firstName || user.lastName || user.email}!
           </p>
         </div>
 
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <div className="mb-8">
+          <div className="relative max-w-2xl">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search classes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
+              className="w-full pl-12 pr-4 py-3.5 glass-effect border border-neutral-800/50 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
             />
           </div>
         </div>
 
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <BookOpen className="w-6 h-6 text-olive-400" />
-            <h2 className="text-2xl font-semibold text-white">My Classes</h2>
-            <span className="text-gray-400">({enrolledClasses.length})</span>
+        <div className="mb-16">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20">
+              <BookOpen className="w-5 h-5 text-olive-400" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-neutral-50">My Classes</h2>
+            <span className="px-3 py-1 bg-neutral-800/50 rounded-full text-neutral-400 text-sm font-medium">
+              {enrolledClasses.length}
+            </span>
           </div>
 
           {enrolledLoading ? (
-            <div className="text-gray-400">Loading your classes...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="glass-effect rounded-2xl overflow-hidden border border-neutral-800/50 card-shadow">
+                  <div className="w-full h-52 skeleton"></div>
+                  <div className="p-6 space-y-3">
+                    <div className="h-5 skeleton rounded"></div>
+                    <div className="h-4 skeleton rounded w-3/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : filteredEnrolled.length === 0 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-              <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg mb-2">No classes enrolled yet</p>
-              <p className="text-gray-500 text-sm">
-                Browse available classes below to get started
+            <div className="glass-effect border border-neutral-800/50 rounded-2xl p-12 md:p-16 text-center card-shadow">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-olive-500/10 rounded-full mb-6 border border-olive-500/20">
+                <BookOpen className="w-10 h-10 text-olive-400/60" />
+              </div>
+              <p className="text-neutral-50 text-xl mb-3 font-semibold">No classes enrolled yet</p>
+              <p className="text-neutral-400 text-sm max-w-md mx-auto">
+                Browse available classes below to get started on your learning journey
               </p>
             </div>
           ) : (
@@ -168,6 +184,7 @@ function Dashboard() {
                 <ClassCard
                   key={classItem.id}
                   classId={classItem.id}
+                  slug={classItem.slug}
                   title={classItem.title}
                   description={classItem.description}
                   thumbnailUrl={classItem.thumbnailUrl}
@@ -180,17 +197,37 @@ function Dashboard() {
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-6">
-            <Search className="w-6 h-6 text-olive-400" />
-            <h2 className="text-2xl font-semibold text-white">Available Classes</h2>
-            <span className="text-gray-400">({availableClasses.length})</span>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-2 bg-accent-500/10 rounded-xl border border-accent-500/20">
+              <Search className="w-5 h-5 text-accent-400" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-neutral-50">Available Classes</h2>
+            <span className="px-3 py-1 bg-neutral-800/50 rounded-full text-neutral-400 text-sm font-medium">
+              {availableClasses.length}
+            </span>
           </div>
 
           {availableLoading ? (
-            <div className="text-gray-400">Loading available classes...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="glass-effect rounded-2xl overflow-hidden border border-neutral-800/50 card-shadow">
+                  <div className="w-full h-52 skeleton"></div>
+                  <div className="p-6 space-y-3">
+                    <div className="h-5 skeleton rounded"></div>
+                    <div className="h-4 skeleton rounded w-3/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : filteredAvailable.length === 0 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-              <p className="text-gray-400 text-lg">No available classes at the moment</p>
+            <div className="glass-effect border border-neutral-800/50 rounded-2xl p-12 md:p-16 text-center card-shadow">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-accent-500/10 rounded-full mb-6 border border-accent-500/20">
+                <Search className="w-10 h-10 text-accent-400/60" />
+              </div>
+              <p className="text-neutral-50 text-xl mb-3 font-semibold">No available classes at the moment</p>
+              <p className="text-neutral-400 text-sm max-w-md mx-auto">
+                Check back soon for new learning opportunities
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -201,6 +238,7 @@ function Dashboard() {
                   <ClassCard
                     key={classItem.id}
                     classId={classItem.id}
+                    slug={classItem.slug}
                     title={classItem.title}
                     description={classItem.description}
                     thumbnailUrl={classItem.thumbnailUrl}
