@@ -3,7 +3,15 @@ import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 import { X, MessageCircle, MessageSquare, Clock } from 'lucide-react'
-import { getCommunitiesForClass, getCommunitiesForUnit, getCommunitiesForLesson, getCommunityThreads } from '../db/queries'
+import { getCommunitiesForClass, getCommunitiesForUnit, getCommunitiesForLesson, getCommunityThreads, getClassBySlug } from '../db/queries'
+
+const getClassBySlugFn = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { slug: string }) => data)
+  .handler(async ({ data }) => {
+    return await getClassBySlug(data.slug)
+  })
 
 const getClassCommunities = createServerFn({
   method: 'POST',
@@ -38,22 +46,33 @@ const getThreads = createServerFn({
   })
 
 interface RightSidebarProps {
-  classId?: string
+  classId?: string // Now accepts slug string
   unitId?: string
   lessonId?: string
 }
 
-export default function RightSidebar({ classId, unitId, lessonId }: RightSidebarProps) {
+export default function RightSidebar({ classId: slug, unitId, lessonId }: RightSidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
 
-  const classIdNum = classId ? parseInt(classId) : undefined
   const unitIdNum = unitId ? parseInt(unitId) : undefined
   const lessonIdNum = lessonId ? parseInt(lessonId) : undefined
 
+  // Get class data from slug to get classId
+  const { data: classData } = useQuery({
+    queryKey: ['classBySlug', slug],
+    queryFn: async () => {
+      if (!slug) return null
+      return await getClassBySlugFn({ data: { slug } })
+    },
+    enabled: !!slug,
+  })
+
+  const classIdNum = classData?.id
+
   // Fetch communities based on context - all hooks must be called before any returns
   const { data: classCommunities } = useQuery({
-    queryKey: ['classCommunities', classId],
+    queryKey: ['classCommunities', slug, classIdNum],
     queryFn: async () => {
       if (!classIdNum) return []
       return await getClassCommunities({ data: { classId: classIdNum } })
@@ -106,59 +125,68 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
   })
 
   // Only show on class/unit/lesson pages - check after all hooks are called
-  const shouldShow = classId && location.pathname.startsWith('/classes/')
+  const shouldShow = slug && location.pathname.startsWith('/classes/')
   if (!shouldShow || !relevantCommunity) return null
 
   return (
     <>
+      {/* Backdrop overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 p-2 hover:bg-gray-700 rounded-lg transition-colors z-40 bg-gray-800 text-white"
+        className="fixed top-20 right-4 p-3 hover:bg-neutral-800/50 rounded-xl transition-all duration-200 z-40 glass-effect border border-neutral-800/50 text-neutral-200 hover:scale-105 focus-ring shadow-lg card-shadow"
         aria-label="Open communities menu"
       >
-        <MessageCircle size={24} />
+        <MessageCircle size={22} />
       </button>
 
       <aside
-        className={`fixed top-0 right-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-80 glass-effect text-white shadow-2xl z-50 transform transition-transform duration-300 ease-out flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold">Communities</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-800/50">
+          <h2 className="text-lg font-bold text-neutral-50">Communities</h2>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-neutral-800/50 rounded-lg transition-all duration-200 hover:scale-110 focus-ring"
             aria-label="Close menu"
           >
-            <X size={24} />
+            <X size={20} className="text-neutral-300" />
           </button>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 px-4 py-4 overflow-y-auto">
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
               {relevantCommunity.type === 'lesson' ? 'Lesson' : relevantCommunity.type === 'unit' ? 'Unit' : 'Class'} Community
             </h3>
             <Link
               to="/communities/$communityId"
               params={{ communityId: relevantCommunity.id.toString() }}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-4"
+              className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/40 transition-all duration-200 mb-4 border border-neutral-800/50"
             >
-              <MessageSquare size={20} />
-              <span className="font-medium">{relevantCommunity.name}</span>
+              <MessageSquare size={20} className="text-neutral-300 group-hover:text-olive-400 transition-colors" />
+              <span className="font-medium text-neutral-200">{relevantCommunity.name}</span>
             </Link>
           </div>
 
           {/* Threads List */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase">Recent Posts</h3>
-              <span className="text-xs text-gray-500">{threads?.length || 0}</span>
+              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Recent Posts</h3>
+              <span className="px-2 py-0.5 bg-neutral-800/50 rounded-full text-xs text-neutral-400 font-medium">{threads?.length || 0}</span>
             </div>
             {!threads || threads.length === 0 ? (
-              <p className="text-sm text-gray-500">No posts yet</p>
+              <p className="text-sm text-neutral-500">No posts yet</p>
             ) : (
               <div className="space-y-2">
                 {threads.slice(0, 10).map((item: any) => {
@@ -181,12 +209,12 @@ export default function RightSidebar({ classId, unitId, lessonId }: RightSidebar
                         threadId: item.thread.id.toString(),
                       }}
                       onClick={() => setIsOpen(false)}
-                      className="block p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                      className="group block p-3 rounded-xl hover:bg-neutral-800/40 transition-all duration-200 border border-transparent hover:border-neutral-800/50"
                     >
-                      <div className="text-sm font-medium text-white mb-1 line-clamp-2">
+                      <div className="text-sm font-medium text-neutral-50 mb-1.5 line-clamp-2 group-hover:text-olive-400 transition-colors">
                         {item.thread.title}
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                      <div className="flex items-center gap-2 text-xs text-neutral-400">
                         <span className="truncate">{authorName}</span>
                         <span>•</span>
                         <div className="flex items-center gap-1">

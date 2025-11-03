@@ -8,31 +8,31 @@ export default function UserMenu() {
   if (isAuthenticated && user) {
     return (
       <div className="space-y-2">
-        <div className="flex items-center gap-2 p-2 bg-gray-700 rounded-lg">
+        <div className="flex items-center gap-3 px-3 py-2.5 bg-neutral-800/40 rounded-xl border border-neutral-800/50">
           {user.firstName || user.lastName ? (
-            <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-sm">
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-olive-500 to-olive-600 rounded-full text-white font-semibold text-sm shadow-lg shadow-olive-500/20">
               {(user.firstName?.[0] || '') + (user.lastName?.[0] || '') || user.email[0].toUpperCase()}
             </div>
           ) : (
-            <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-sm">
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-olive-500 to-olive-600 rounded-full text-white font-semibold text-sm shadow-lg shadow-olive-500/20">
               {user.email[0].toUpperCase()}
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <p className="text-white font-medium text-sm truncate">
+            <p className="text-neutral-50 font-medium text-sm truncate">
               {user.firstName || user.lastName
                 ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
                 : user.email}
             </p>
-            <p className="text-gray-400 text-xs truncate">{user.email}</p>
+            <p className="text-neutral-400 text-xs truncate">{user.email}</p>
           </div>
         </div>
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/40 transition-all duration-200 text-left group"
         >
-          <LogOut size={20} />
-          <span className="font-medium">Sign Out</span>
+          <LogOut size={18} className="text-neutral-300 group-hover:text-red-400 transition-colors" />
+          <span className="font-medium text-neutral-200">Sign Out</span>
         </button>
       </div>
     )
@@ -42,17 +42,17 @@ export default function UserMenu() {
     <div className="space-y-2">
       <Link
         to="/login"
-        className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors"
+        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/40 transition-all duration-200 group"
       >
-        <LogIn size={20} />
-        <span className="font-medium">Sign In</span>
+        <LogIn size={18} className="text-neutral-300 group-hover:text-olive-400 transition-colors" />
+        <span className="font-medium text-neutral-200">Sign In</span>
       </Link>
       <Link
         to="/signup"
-        className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors"
+        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/40 transition-all duration-200 group"
       >
-        <UserPlus size={20} />
-        <span className="font-medium">Sign Up</span>
+        <UserPlus size={18} className="text-neutral-300 group-hover:text-olive-400 transition-colors" />
+        <span className="font-medium text-neutral-200">Sign Up</span>
       </Link>
     </div>
   )
