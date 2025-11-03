@@ -30,21 +30,23 @@ export default function CommunityCard({
     <Link
       to="/communities/$communityId"
       params={{ communityId: communityId.toString() }}
-      className="block"
+      className="block group"
       onClick={handleClick}
     >
-      <div className="bg-slate-800 rounded-lg border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors cursor-pointer">
-        <div className="flex items-start justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-olive-400" />
-            <h3 className="text-white font-medium">{name}</h3>
+      <div className="glass-effect rounded-2xl border border-neutral-800/50 p-6 hover:border-olive-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-olive-500/10 hover:-translate-y-1 card-shadow">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20 group-hover:bg-olive-500/20 transition-colors">
+              <MessageSquare className="w-4 h-4 text-olive-400" />
+            </div>
+            <h3 className="text-neutral-50 font-bold group-hover:text-olive-400 transition-colors">{name}</h3>
           </div>
-          <span className="px-2 py-1 bg-slate-700 text-gray-300 text-xs rounded-full">
+          <span className="px-2.5 py-1 bg-neutral-800/50 text-neutral-400 text-xs font-medium rounded-full border border-neutral-800/50">
             {typeLabels[type]}
           </span>
         </div>
         {description && (
-          <p className="text-gray-400 text-sm line-clamp-2">{description}</p>
+          <p className="text-neutral-400 text-sm line-clamp-2 leading-relaxed">{description}</p>
         )}
       </div>
     </Link>

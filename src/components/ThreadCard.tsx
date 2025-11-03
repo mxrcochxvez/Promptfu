@@ -42,14 +42,14 @@ export default function ThreadCard({
         communityId: communityId.toString(),
         threadId: threadId.toString(),
       }}
-      className="block relative"
+      className="block relative group"
     >
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-olive-500/50 transition-colors">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-white font-medium flex-1">{title}</h3>
-          <MessageSquare className="w-5 h-5 text-gray-400 flex-shrink-0 ml-2" />
+      <div className="glass-effect border border-neutral-800/50 rounded-xl p-5 hover:border-olive-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-olive-500/10 hover:-translate-y-1 card-shadow">
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="text-neutral-50 font-bold flex-1 group-hover:text-olive-400 transition-colors">{title}</h3>
+          <MessageSquare className="w-5 h-5 text-neutral-400 group-hover:text-olive-400 flex-shrink-0 ml-2 transition-colors" />
         </div>
-        <div className="flex items-center gap-3 text-sm text-gray-400">
+        <div className="flex items-center gap-3 text-sm text-neutral-400">
           <span>by {authorName}</span>
           <span>•</span>
           <span>{replyCount} {replyCount === 1 ? 'reply' : 'replies'}</span>

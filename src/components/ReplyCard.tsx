@@ -32,16 +32,16 @@ export default function ReplyCard({ replyId, content, author, createdAt, onDelet
   })
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 relative">
+    <div className="glass-effect border border-neutral-800/50 rounded-xl p-5 relative card-shadow">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-sm">
+          <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-olive-500 to-olive-600 rounded-full text-white font-semibold text-sm shadow-lg shadow-olive-500/20">
             {authorName[0].toUpperCase()}
           </div>
-          <span className="text-white font-medium">{authorName}</span>
+          <span className="text-neutral-50 font-bold">{authorName}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-sm text-gray-400">
+          <div className="flex items-center gap-1 text-sm text-neutral-400">
             <Clock className="w-4 h-4" />
             <span>{formattedDate}</span>
           </div>
@@ -53,7 +53,7 @@ export default function ReplyCard({ replyId, content, author, createdAt, onDelet
                 }
               }}
               disabled={isDeleting}
-              className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-2"
+              className="p-2 bg-error-600 hover:bg-error-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-2 shadow-md shadow-error-500/20 hover:shadow-lg hover:shadow-error-500/30"
               title="Delete reply"
             >
               <Trash2 className="w-4 h-4" />
@@ -61,7 +61,7 @@ export default function ReplyCard({ replyId, content, author, createdAt, onDelet
           )}
         </div>
       </div>
-      <div className="text-gray-300">
+      <div className="text-neutral-200">
         <MarkdownRenderer content={content} />
       </div>
     </div>
