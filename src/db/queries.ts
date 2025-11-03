@@ -18,6 +18,7 @@ import {
   users,
   feedback,
 } from './schema'
+import { generateSlug, ensureUniqueSlug } from '../lib/slug'
 
 // Class queries
 export async function getAllClasses() {
@@ -26,6 +27,11 @@ export async function getAllClasses() {
 
 export async function getClassById(classId: number) {
   const result = await db.select().from(classes).where(eq(classes.id, classId)).limit(1)
+  return result[0] || null
+}
+
+export async function getClassBySlug(slug: string) {
+  const result = await db.select().from(classes).where(eq(classes.slug, slug)).limit(1)
   return result[0] || null
 }
 
@@ -384,10 +390,19 @@ export async function createClass(data: {
   description?: string | null
   thumbnailUrl?: string | null
 }) {
+  // Generate slug from title
+  const baseSlug = generateSlug(data.title)
+  
+  // Get all existing slugs to ensure uniqueness
+  const allClasses = await db.select({ slug: classes.slug }).from(classes)
+  const existingSlugs = allClasses.map(c => c.slug).filter(Boolean) as string[]
+  const uniqueSlug = ensureUniqueSlug(baseSlug, existingSlugs)
+  
   const [newClass] = await db
     .insert(classes)
     .values({
       title: data.title,
+      slug: uniqueSlug,
       description: data.description || null,
       thumbnailUrl: data.thumbnailUrl || null,
     })
@@ -412,10 +427,31 @@ export async function updateClass(
     thumbnailUrl?: string | null
   }
 ) {
+  // Get current class to check if title changed
+  const currentClass = await getClassById(classId)
+  if (!currentClass) {
+    throw new Error('Class not found')
+  }
+  
+  // Generate new slug if title changed
+  let slug = currentClass.slug
+  if (data.title !== currentClass.title) {
+    const baseSlug = generateSlug(data.title)
+    
+    // Get all existing slugs (excluding current class) to ensure uniqueness
+    const allClasses = await db.select({ slug: classes.slug, id: classes.id }).from(classes)
+    const existingSlugs = allClasses
+      .filter(c => c.id !== classId)
+      .map(c => c.slug)
+      .filter(Boolean) as string[]
+    slug = ensureUniqueSlug(baseSlug, existingSlugs)
+  }
+  
   const [updated] = await db
     .update(classes)
     .set({
       title: data.title,
+      slug: slug,
       description: data.description || null,
       thumbnailUrl: data.thumbnailUrl || null,
       updatedAt: new Date(),

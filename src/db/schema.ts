@@ -26,6 +26,7 @@ export const users = pgTable('users', {
 export const classes = pgTable('classes', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
   description: text('description'),
   thumbnailUrl: text('thumbnail_url'),
   createdAt: timestamp('created_at').defaultNow(),

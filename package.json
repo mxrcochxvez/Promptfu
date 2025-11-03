@@ -12,7 +12,9 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:studio": "drizzle-kit studio",
-    "db:backfill-communities": "tsx scripts/backfill-communities.ts"
+    "db:backfill-communities": "tsx scripts/backfill-communities.ts",
+    "db:backfill-slugs": "tsx scripts/backfill-slugs.ts",
+    "db:migrate-slug": "tsx scripts/run-slug-migration.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
