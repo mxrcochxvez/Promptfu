@@ -42,13 +42,13 @@ function AdminClassesList() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Admin - Classes</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-neutral-50">Admin - Classes</h1>
           <Link
             to="/admin/classes/create"
-            className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+            className="px-6 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Create New Class
@@ -56,14 +56,16 @@ function AdminClassesList() {
         </div>
 
         {isLoading ? (
-          <div className="text-gray-400">Loading classes...</div>
+          <div className="text-neutral-400">Loading classes...</div>
         ) : !classes || classes.length === 0 ? (
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-            <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg mb-4">No classes created yet</p>
+          <div className="glass-effect border border-neutral-800/50 rounded-2xl p-12 md:p-16 text-center card-shadow">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-olive-500/10 rounded-full mb-6 border border-olive-500/20">
+              <BookOpen className="w-10 h-10 text-olive-400/60" />
+            </div>
+            <p className="text-neutral-50 text-xl mb-4 font-semibold">No classes created yet</p>
             <Link
               to="/admin/classes/create"
-              className="inline-block px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors"
+              className="inline-block px-6 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
             >
               Create Your First Class
             </Link>
@@ -73,30 +75,30 @@ function AdminClassesList() {
             {classes.map((classItem) => (
               <div
                 key={classItem.id}
-                className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-olive-500/50 transition-colors"
+                className="group glass-effect border border-neutral-800/50 rounded-2xl overflow-hidden hover:border-olive-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-olive-500/10 hover:-translate-y-1 card-shadow"
               >
                 {classItem.thumbnailUrl && (
-                  <div className="w-full h-48 overflow-hidden">
+                  <div className="w-full h-48 overflow-hidden bg-neutral-900">
                     <img
                       src={classItem.thumbnailUrl}
                       alt={classItem.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 )}
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-white mb-2">
+                  <h3 className="text-xl font-bold text-neutral-50 mb-2 group-hover:text-olive-400 transition-colors">
                     {classItem.title}
                   </h3>
                   {classItem.description && (
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    <p className="text-neutral-400 text-sm mb-4 line-clamp-2 leading-relaxed">
                       {classItem.description}
                     </p>
                   )}
                   <Link
                     to="/admin/classes/$classId/edit"
                     params={{ classId: classItem.id.toString() }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-medium rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-olive-500/20 hover:shadow-lg hover:shadow-olive-500/30"
                   >
                     <Edit className="w-4 h-4" />
                     Edit
