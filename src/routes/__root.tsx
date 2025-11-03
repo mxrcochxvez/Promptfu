@@ -130,8 +130,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <AuthProvider>
-          <Header />
-          {children}
+          <div className="min-h-screen bg-gradient-hero">
+            <Header />
+            {children}
+          </div>
           {isDevelopment && (
             <TanStackDevtools
               config={{
