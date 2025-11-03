@@ -13,6 +13,7 @@ import {
   enrollUserInClass,
   getClassCompletion,
   getUnitCompletion,
+  getUnitCompletionsBatch,
   hasCompletedTest,
 } from '../../db/queries'
 import { BookOpen, PlayCircle, CheckCircle2, ArrowRight } from 'lucide-react'
@@ -21,23 +22,13 @@ function UnitCard({
   unit,
   index,
   slug,
-  userId,
-  getUnitProgress,
+  unitProgress,
 }: {
   unit: { id: number; title: string }
   index: number
   slug: string
-  userId?: number
-  getUnitProgress: any
+  unitProgress?: number
 }) {
-  const { data: unitProgress } = useQuery({
-    queryKey: ['unitProgress', unit.id, userId],
-    queryFn: async () => {
-      if (!userId) return 0
-      return await getUnitProgress({ data: { userId, unitId: unit.id } as any })
-    },
-    enabled: !!userId,
-  })
 
   return (
     <Link
@@ -57,7 +48,7 @@ function UnitCard({
         </div>
         <ArrowRight className="w-5 h-5 text-neutral-400 group-hover:text-olive-400 group-hover:translate-x-1 transition-all" />
       </div>
-      {userId && unitProgress !== undefined && (
+      {unitProgress !== undefined && (
         <div className="mt-4">
           <div className="flex justify-between items-center mb-2.5">
             <span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Progress</span>
@@ -119,12 +110,13 @@ const getCompletion = createServerFn({
     return await getClassCompletion(data.userId, data.classId)
   })
 
-const getUnitProgress = createServerFn({
+const getUnitsProgressBatch = createServerFn({
   method: 'POST',
 })
-  .inputValidator((data: { userId: number; unitId: number }) => data)
+  .inputValidator((data: { userId: number; unitIds: number[] }) => data)
   .handler(async ({ data }) => {
-    return await getUnitCompletion(data.userId, data.unitId)
+    if (!data.userId || data.unitIds.length === 0) return {}
+    return await getUnitCompletionsBatch(data.userId, data.unitIds)
   })
 
 export const Route = createFileRoute('/classes/$slug')({
@@ -188,6 +180,19 @@ function ClassDetail() {
       })
     },
     enabled: !!user?.id && isEnrolled === true && !!classId,
+  })
+
+  // Batch fetch unit progress for all units
+  const unitIds = units?.map(u => u.id) || []
+  const { data: unitProgresses } = useQuery({
+    queryKey: ['unitsProgress', slug, classId, user?.id, unitIds.join(',')],
+    queryFn: async () => {
+      if (!user?.id || unitIds.length === 0) return {}
+      return await getUnitsProgressBatch({
+        data: { userId: user.id, unitIds },
+      })
+    },
+    enabled: !!user?.id && isEnrolled === true && unitIds.length > 0,
   })
 
   const enrollMutation = useMutation({
@@ -317,8 +322,7 @@ function ClassDetail() {
                   unit={unit}
                   index={index}
                   slug={slug}
-                  userId={user?.id}
-                  getUnitProgress={getUnitProgress}
+                  unitProgress={unitProgresses?.[unit.id]}
                 />
               ))}
             </div>

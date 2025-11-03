@@ -9,6 +9,8 @@ import {
   getUserEnrollments,
   getAvailableClasses,
   getClassCompletion,
+  getClassCompletionsBatch,
+  getClassesWithContentBatch,
 } from '../db/queries';
 
 const getEnrolledClassesForUser = createServerFn({
@@ -19,15 +21,17 @@ const getEnrolledClassesForUser = createServerFn({
     if (!data) return { classes: [] }
 
     const enrollments = await getUserEnrollments(data)
-    const classesWithProgress = await Promise.all(
-      enrollments.map(async (e) => {
-        const progress = await getClassCompletion(data, e.class.id)
-        return {
-          ...e.class,
-          progress,
-        }
-      })
-    )
+    const classIds = enrollments.map(e => e.class.id)
+    
+    // Use batch function to get all completions at once
+    const completions = classIds.length > 0
+      ? await getClassCompletionsBatch(data, classIds)
+      : {}
+
+    const classesWithProgress = enrollments.map(e => ({
+      ...e.class,
+      progress: completions[e.class.id] || 0,
+    }))
 
     return { classes: classesWithProgress }
   })
@@ -40,18 +44,13 @@ const getAvailableClassesForUser = createServerFn({
     if (!data) return { classes: [] }
 
     const classes = await getAvailableClasses(data)
-    // Add hasContent check for each class
-    const classesWithContent = await Promise.all(
-      classes.map(async (classItem) => {
-        const { getUnitsByClassId, getTestsByClassId } = await import('../db/queries')
-        const units = await getUnitsByClassId(classItem.id)
-        const tests = await getTestsByClassId(classItem.id)
-        return {
-          ...classItem,
-          hasContent: units.length > 0 || tests.length > 0,
-        }
-      })
-    )
+    const classIds = classes.map(c => c.id)
+    
+    // Use batch function to get content flags for all classes at once
+    const classesWithContent = classIds.length > 0
+      ? await getClassesWithContentBatch(classIds)
+      : classes.map(c => ({ ...c, hasContent: false }))
+    
     return { classes: classesWithContent }
   })
 

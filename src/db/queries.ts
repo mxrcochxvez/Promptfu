@@ -162,6 +162,39 @@ export async function getAllClassesWithContentCheck() {
   return classesWithContent
 }
 
+// Batch version: Get classes with content flags using a single optimized query
+export async function getClassesWithContentBatch(classIds: number[]) {
+  if (classIds.length === 0) return []
+
+  // Fetch all classes in batch
+  const allClasses = await db
+    .select()
+    .from(classes)
+    .where(inArray(classes.id, classIds))
+    .orderBy(desc(classes.createdAt))
+
+  // Fetch all units and tests for all classes in batch
+  const allUnits = await db
+    .select({ id: units.id, classId: units.classId })
+    .from(units)
+    .where(inArray(units.classId, classIds))
+
+  const allTests = await db
+    .select({ id: tests.id, classId: tests.classId })
+    .from(tests)
+    .where(inArray(tests.classId, classIds))
+
+  // Create sets of class IDs that have units or tests
+  const classesWithUnits = new Set(allUnits.map(u => u.classId))
+  const classesWithTests = new Set(allTests.map(t => t.classId))
+
+  // Map classes with content flags
+  return allClasses.map((classItem) => ({
+    ...classItem,
+    hasContent: classesWithUnits.has(classItem.id) || classesWithTests.has(classItem.id),
+  }))
+}
+
 // Lesson completion queries
 export async function isLessonCompleted(userId: number, lessonId: number) {
   const result = await db
@@ -235,6 +268,71 @@ export async function getUnitCompletion(userId: number, unitId: number) {
   return Math.round((completedLessons.length / unitLessons.length) * 100)
 }
 
+// Batch version: Calculate unit completion percentages for multiple units at once
+export async function getUnitCompletionsBatch(userId: number, unitIds: number[]): Promise<Record<number, number>> {
+  if (unitIds.length === 0) return {}
+
+  // Fetch all lessons for all units in batch
+  const allLessons = await db
+    .select()
+    .from(lessons)
+    .where(inArray(lessons.unitId, unitIds))
+    .orderBy(lessons.orderIndex)
+
+  // Group lessons by unitId
+  const lessonsByUnit: Record<number, typeof allLessons> = {}
+  for (const lesson of allLessons) {
+    if (!lessonsByUnit[lesson.unitId]) lessonsByUnit[lesson.unitId] = []
+    lessonsByUnit[lesson.unitId].push(lesson)
+  }
+
+  // Fetch all lesson completions in batch
+  const allLessonIds = allLessons.map(l => l.id)
+  const completedLessons = allLessonIds.length > 0
+    ? await db
+        .select()
+        .from(lessonCompletions)
+        .where(
+          and(
+            eq(lessonCompletions.userId, userId),
+            inArray(lessonCompletions.lessonId, allLessonIds)
+          )
+        )
+    : []
+
+  // Create a set of completed lesson IDs for quick lookup
+  const completedLessonIds = new Set(completedLessons.map(cl => cl.lessonId))
+
+  // Fetch all unit completions in batch (for legacy units without lessons)
+  const completedUnits = await db
+    .select()
+    .from(unitCompletions)
+    .where(
+      and(
+        eq(unitCompletions.userId, userId),
+        inArray(unitCompletions.unitId, unitIds)
+      )
+    )
+  const completedUnitIds = new Set(completedUnits.map(cu => cu.unitId))
+
+  // Calculate completion for each unit
+  const completions: Record<number, number> = {}
+  
+  for (const unitId of unitIds) {
+    const unitLessons = lessonsByUnit[unitId] || []
+    
+    if (unitLessons.length === 0) {
+      // Legacy: check if unit was manually completed
+      completions[unitId] = completedUnitIds.has(unitId) ? 100 : 0
+    } else {
+      const completedCount = unitLessons.filter(l => completedLessonIds.has(l.id)).length
+      completions[unitId] = Math.round((completedCount / unitLessons.length) * 100)
+    }
+  }
+
+  return completions
+}
+
 // Completion queries
 export async function getCompletedUnits(userId: number, classId: number) {
   const classUnits = await getUnitsByClassId(classId)
@@ -290,17 +388,40 @@ export async function getClassCompletion(userId: number, classId: number) {
   const classUnits = await getUnitsByClassId(classId)
   const classTests = await getTestsByClassId(classId)
 
-  // Calculate average unit completion percentage
+  // Use batch function for unit completions
+  const unitIds = classUnits.map(u => u.id)
+  const unitCompletions = unitIds.length > 0
+    ? await getUnitCompletionsBatch(userId, unitIds)
+    : {}
+
+  // Calculate total unit progress
   let totalUnitProgress = 0
   for (const unit of classUnits) {
-    totalUnitProgress += await getUnitCompletion(userId, unit.id)
+    totalUnitProgress += unitCompletions[unit.id] || 0
+  }
+
+  // Batch fetch test completions
+  const testIds = classTests.map(t => t.id)
+  const completedTestIds = new Set<number>()
+  
+  if (testIds.length > 0) {
+    const testSubmissions = await db
+      .select({ testId: testSubmissions.testId })
+      .from(testSubmissions)
+      .where(
+        and(
+          eq(testSubmissions.userId, userId),
+          inArray(testSubmissions.testId, testIds)
+        )
+      )
+    
+    testSubmissions.forEach(ts => completedTestIds.add(ts.testId))
   }
 
   // Calculate test completion (tests count as 100% if completed, 0% if not)
   let totalTestProgress = 0
   for (const test of classTests) {
-    const completed = await hasCompletedTest(userId, test.id)
-    totalTestProgress += completed ? 100 : 0
+    totalTestProgress += completedTestIds.has(test.id) ? 100 : 0
   }
 
   const totalItems = classUnits.length + classTests.length
@@ -308,6 +429,139 @@ export async function getClassCompletion(userId: number, classId: number) {
 
   const totalProgress = totalUnitProgress + totalTestProgress
   return Math.round(totalProgress / totalItems)
+}
+
+// Batch version: Calculate class completion percentages for multiple classes at once
+export async function getClassCompletionsBatch(userId: number, classIds: number[]): Promise<Record<number, number>> {
+  if (classIds.length === 0) return {}
+
+  // Fetch all units and tests for all classes in batch
+  const allUnits = await db
+    .select()
+    .from(units)
+    .where(inArray(units.classId, classIds))
+    .orderBy(units.orderIndex)
+
+  const allTests = await db
+    .select()
+    .from(tests)
+    .where(inArray(tests.classId, classIds))
+
+  // Group units and tests by classId
+  const unitsByClass: Record<number, typeof allUnits> = {}
+  const testsByClass: Record<number, typeof allTests> = {}
+  
+  for (const unit of allUnits) {
+    if (!unitsByClass[unit.classId]) unitsByClass[unit.classId] = []
+    unitsByClass[unit.classId].push(unit)
+  }
+
+  for (const test of allTests) {
+    if (!testsByClass[test.classId]) testsByClass[test.classId] = []
+    testsByClass[test.classId].push(test)
+  }
+
+  // Get all unit IDs for batch lesson fetching
+  const allUnitIds = allUnits.map(u => u.id)
+  
+  // Fetch all lessons for all units in batch
+  const allLessons = allUnitIds.length > 0
+    ? await db
+        .select()
+        .from(lessons)
+        .where(inArray(lessons.unitId, allUnitIds))
+        .orderBy(lessons.orderIndex)
+    : []
+
+  // Group lessons by unitId
+  const lessonsByUnit: Record<number, typeof allLessons> = {}
+  for (const lesson of allLessons) {
+    if (!lessonsByUnit[lesson.unitId]) lessonsByUnit[lesson.unitId] = []
+    lessonsByUnit[lesson.unitId].push(lesson)
+  }
+
+  // Fetch all lesson completions in batch
+  const allLessonIds = allLessons.map(l => l.id)
+  const completedLessons = allLessonIds.length > 0
+    ? await db
+        .select()
+        .from(lessonCompletions)
+        .where(
+          and(
+            eq(lessonCompletions.userId, userId),
+            inArray(lessonCompletions.lessonId, allLessonIds)
+          )
+        )
+    : []
+
+  // Create a set of completed lesson IDs for quick lookup
+  const completedLessonIds = new Set(completedLessons.map(cl => cl.lessonId))
+
+  // Fetch all unit completions in batch (for legacy units without lessons)
+  const completedUnits = allUnitIds.length > 0
+    ? await db
+        .select()
+        .from(unitCompletions)
+        .where(
+          and(
+            eq(unitCompletions.userId, userId),
+            inArray(unitCompletions.unitId, allUnitIds)
+          )
+        )
+    : []
+  const completedUnitIds = new Set(completedUnits.map(cu => cu.unitId))
+
+  // Fetch all test submissions in batch
+  const allTestIds = allTests.map(t => t.id)
+  const testSubmissions = allTestIds.length > 0
+    ? await db
+        .select({ testId: testSubmissions.testId })
+        .from(testSubmissions)
+        .where(
+          and(
+            eq(testSubmissions.userId, userId),
+            inArray(testSubmissions.testId, allTestIds)
+          )
+        )
+    : []
+  const completedTestIds = new Set(testSubmissions.map(ts => ts.testId))
+
+  // Calculate completion for each class
+  const completions: Record<number, number> = {}
+  
+  for (const classId of classIds) {
+    const classUnits = unitsByClass[classId] || []
+    const classTests = testsByClass[classId] || []
+
+    // Calculate unit progress
+    let totalUnitProgress = 0
+    for (const unit of classUnits) {
+      const unitLessons = lessonsByUnit[unit.id] || []
+      if (unitLessons.length === 0) {
+        // Legacy: check if unit was manually completed
+        totalUnitProgress += completedUnitIds.has(unit.id) ? 100 : 0
+      } else {
+        const completedCount = unitLessons.filter(l => completedLessonIds.has(l.id)).length
+        totalUnitProgress += Math.round((completedCount / unitLessons.length) * 100)
+      }
+    }
+
+    // Calculate test progress
+    let totalTestProgress = 0
+    for (const test of classTests) {
+      totalTestProgress += completedTestIds.has(test.id) ? 100 : 0
+    }
+
+    const totalItems = classUnits.length + classTests.length
+    if (totalItems === 0) {
+      completions[classId] = 0
+    } else {
+      const totalProgress = totalUnitProgress + totalTestProgress
+      completions[classId] = Math.round(totalProgress / totalItems)
+    }
+  }
+
+  return completions
 }
 
 // Test submission
