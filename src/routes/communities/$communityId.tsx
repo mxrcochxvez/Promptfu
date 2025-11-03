@@ -169,8 +169,8 @@ function CommunityDetail() {
   // Validate communityId after all hooks are called
   if (isNaN(communityIdNum)) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-red-400">Invalid community ID: {communityId}</div>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-error-400">Invalid community ID: {communityId}</div>
       </div>
     )
   }
@@ -182,8 +182,11 @@ function CommunityDetail() {
 
   if (communityLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Loading community...</div>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-olive-500/30 border-t-olive-500 mx-auto mb-4"></div>
+          <div className="text-neutral-300">Loading community...</div>
+        </div>
       </div>
     )
   }
@@ -191,8 +194,8 @@ function CommunityDetail() {
   if (communityError) {
     console.error('Community error:', communityError)
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-red-400">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-error-400">
           Error loading community: {communityError instanceof Error ? communityError.message : 'Unknown error'}
         </div>
       </div>
@@ -201,17 +204,17 @@ function CommunityDetail() {
 
   if (!community) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Community not found (ID: {communityId})</div>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-neutral-50">Community not found (ID: {communityId})</div>
       </div>
     )
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <p className="text-white text-xl mb-4">Please sign in to view this community</p>
+          <p className="text-neutral-50 text-xl mb-4">Please sign in to view this community</p>
         </div>
       </div>
     )
@@ -229,12 +232,12 @@ function CommunityDetail() {
   const canCreateThread = isMember === true
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-5xl mx-auto">
         {/* Back Link */}
         <Link
           to="/communities"
-          className="text-olive-400 hover:text-olive-300 mb-6 inline-flex items-center gap-2"
+          className="text-accent-500 hover:text-accent-400 mb-6 inline-flex items-center gap-2 transition-colors duration-200 font-medium"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Communities
@@ -242,9 +245,9 @@ function CommunityDetail() {
 
         {/* Community Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{community.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-neutral-50 mb-3">{community.name}</h1>
           {community.description && (
-            <p className="text-gray-300 text-lg mb-6">{community.description}</p>
+            <p className="text-neutral-300 text-lg mb-6 leading-relaxed">{community.description}</p>
           )}
 
           {/* Enroll button for general communities */}
@@ -252,7 +255,7 @@ function CommunityDetail() {
             <button
               onClick={handleEnroll}
               disabled={enrollMutation.isPending}
-              className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
             >
               <UserPlus className="w-5 h-5" />
               {enrollMutation.isPending ? 'Enrolling...' : 'Join Community'}
@@ -260,8 +263,8 @@ function CommunityDetail() {
           )}
 
           {!canCreateThread && (
-            <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-4 mt-4">
-              <p className="text-yellow-400 text-sm">
+            <div className="glass-effect border border-warning-500/30 rounded-xl p-4 mt-4 bg-warning-500/10 card-shadow">
+              <p className="text-warning-400 text-sm font-medium">
                 You must join this community to create threads
               </p>
             </div>
@@ -274,40 +277,40 @@ function CommunityDetail() {
             {!showCreateThread ? (
               <button
                 onClick={() => setShowCreateThread(true)}
-                className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+                className="px-6 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Plus className="w-5 h-5" />
                 Create New Thread
               </button>
             ) : (
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-                <h3 className="text-white font-semibold mb-4">Create New Thread</h3>
-                <div className="space-y-4">
+              <div className="glass-effect border border-neutral-800/50 rounded-2xl p-6 card-shadow">
+                <h3 className="text-neutral-50 font-bold mb-4">Create New Thread</h3>
+                <div className="space-y-5">
                   <div>
-                    <label className="block text-gray-300 text-sm mb-2">Title</label>
+                    <label className="block text-neutral-300 text-sm font-medium mb-2.5">Title</label>
                     <input
                       type="text"
                       value={threadTitle}
                       onChange={(e) => setThreadTitle(e.target.value)}
                       placeholder="Thread title"
-                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
+                      className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-300 text-sm mb-2">Content</label>
+                    <label className="block text-neutral-300 text-sm font-medium mb-2.5">Content</label>
                     <textarea
                       value={threadContent}
                       onChange={(e) => setThreadContent(e.target.value)}
                       placeholder="Thread content"
                       rows={6}
-                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
+                      className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200 resize-none"
                     />
                   </div>
                   <div className="flex gap-3">
                     <button
                       onClick={handleCreateThread}
                       disabled={createThreadMutation.isPending || !threadTitle.trim() || !threadContent.trim()}
-                      className="px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-3 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-olive-500/20 hover:shadow-lg hover:shadow-olive-500/30"
                     >
                       {createThreadMutation.isPending ? 'Creating...' : 'Create Thread'}
                     </button>
@@ -317,7 +320,7 @@ function CommunityDetail() {
                         setThreadTitle('')
                         setThreadContent('')
                       }}
-                      className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
+                      className="px-4 py-3.5 glass-effect border border-neutral-800/50 hover:border-neutral-700/50 text-neutral-50 font-semibold rounded-xl transition-all duration-200"
                     >
                       Cancel
                     </button>
@@ -330,26 +333,30 @@ function CommunityDetail() {
 
         {/* Threads Section */}
         <div>
-          <div className="flex items-center gap-2 mb-6">
-            <MessageSquare className="w-6 h-6 text-olive-400" />
-            <h2 className="text-2xl font-semibold text-white">Discussion Threads</h2>
-            <span className="text-gray-400">({threads?.length || 0})</span>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-olive-500/10 rounded-xl border border-olive-500/20">
+              <MessageSquare className="w-5 h-5 text-olive-400" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-neutral-50">Discussion Threads</h2>
+            <span className="px-3 py-1 bg-neutral-800/50 rounded-full text-neutral-400 text-sm font-medium">({threads?.length || 0})</span>
           </div>
 
           {threadsError && (
-            <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 mb-4">
-              <p className="text-red-400 text-sm">
+            <div className="bg-error-500/10 border border-error-500/30 rounded-xl p-4 mb-4 card-shadow">
+              <p className="text-error-400 text-sm">
                 Error loading threads: {threadsError instanceof Error ? threadsError.message : 'Unknown error'}
               </p>
             </div>
           )}
           {threadsLoading ? (
-            <div className="text-gray-400">Loading threads...</div>
+            <div className="text-neutral-400">Loading threads...</div>
           ) : !threads || threads.length === 0 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-              <MessageSquare className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg mb-2">No threads yet</p>
-              <p className="text-gray-500 text-sm">
+            <div className="glass-effect border border-neutral-800/50 rounded-2xl p-12 md:p-16 text-center card-shadow">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-accent-500/10 rounded-full mb-6 border border-accent-500/20">
+                <MessageSquare className="w-10 h-10 text-accent-400/60" />
+              </div>
+              <p className="text-neutral-50 text-xl mb-2 font-semibold">No threads yet</p>
+              <p className="text-neutral-400 text-sm">
                 {canCreateThread ? 'Be the first to start a discussion!' : 'Join this community to create threads'}
               </p>
             </div>
@@ -375,7 +382,7 @@ function CommunityDetail() {
                         }
                       }}
                       disabled={deleteThreadMutation.isPending}
-                      className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute top-3 right-3 p-2 bg-error-600 hover:bg-error-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-error-500/20 hover:shadow-lg hover:shadow-error-500/30"
                       title="Delete thread"
                     >
                       <Trash2 className="w-4 h-4" />

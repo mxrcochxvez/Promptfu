@@ -150,16 +150,19 @@ function ThreadDetail() {
 
   if (threadLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Loading thread...</div>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-olive-500/30 border-t-olive-500 mx-auto mb-4"></div>
+          <div className="text-neutral-300">Loading thread...</div>
+        </div>
       </div>
     )
   }
 
   if (!threadData) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Thread not found</div>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-neutral-50">Thread not found</div>
       </div>
     )
   }
@@ -175,22 +178,22 @@ function ThreadDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-hero py-8 px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
         {/* Back Link */}
         <Link
           to="/communities/$communityId"
           params={{ communityId }}
-          className="text-olive-400 hover:text-olive-300 mb-6 inline-flex items-center gap-2"
+          className="text-accent-500 hover:text-accent-400 mb-6 inline-flex items-center gap-2 transition-colors duration-200 font-medium"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to {community?.name || 'Community'}
         </Link>
 
         {/* Thread */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6 relative">
+        <div className="glass-effect border border-neutral-800/50 rounded-2xl p-6 mb-6 relative card-shadow">
           <div className="flex items-start justify-between mb-4">
-            <h1 className="text-3xl font-bold text-white flex-1">{thread.title}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-50 flex-1">{thread.title}</h1>
             {user?.isAdmin && (
               <button
                 onClick={async () => {
@@ -199,41 +202,43 @@ function ThreadDetail() {
                   }
                 }}
                 disabled={deleteThreadMutation.isPending}
-                className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-4"
+                className="p-2 bg-error-600 hover:bg-error-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-4 shadow-md shadow-error-500/20 hover:shadow-lg hover:shadow-error-500/30"
                 title="Delete thread"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
             )}
           </div>
-          <div className="flex items-center gap-3 mb-4 text-sm text-gray-400">
+          <div className="flex items-center gap-3 mb-4 text-sm text-neutral-400">
             <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 bg-olive-500 rounded-full text-white font-semibold text-xs">
+              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-olive-500 to-olive-600 rounded-full text-white font-semibold text-xs shadow-lg shadow-olive-500/20">
                 {authorName[0].toUpperCase()}
               </div>
-              <span>{authorName}</span>
+              <span className="text-neutral-300">{authorName}</span>
             </div>
             <span>•</span>
             <span>{new Date(thread.createdAt).toLocaleDateString()}</span>
           </div>
-          <div className="text-gray-300">
+          <div className="text-neutral-200">
             <MarkdownRenderer content={thread.content} />
           </div>
         </div>
 
         {/* Replies Section */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <MessageSquare className="w-5 h-5 text-olive-400" />
-            <h2 className="text-xl font-semibold text-white">Replies</h2>
-            <span className="text-gray-400">({replies?.length || 0})</span>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-accent-500/10 rounded-xl border border-accent-500/20">
+              <MessageSquare className="w-5 h-5 text-accent-400" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-bold text-neutral-50">Replies</h2>
+            <span className="px-3 py-1 bg-neutral-800/50 rounded-full text-neutral-400 text-sm font-medium">({replies?.length || 0})</span>
           </div>
 
           {repliesLoading ? (
-            <div className="text-gray-400">Loading replies...</div>
+            <div className="text-neutral-400">Loading replies...</div>
           ) : !replies || replies.length === 0 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-              <p className="text-gray-400">No replies yet. Be the first to reply!</p>
+            <div className="glass-effect border border-neutral-800/50 rounded-2xl p-12 md:p-16 text-center card-shadow">
+              <p className="text-neutral-400">No replies yet. Be the first to reply!</p>
             </div>
           ) : (
             <div className="space-y-4 mb-6">
@@ -255,20 +260,20 @@ function ThreadDetail() {
 
         {/* Reply Form */}
         {user ? (
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-            <h3 className="text-white font-semibold mb-4">Add a Reply</h3>
+          <div className="glass-effect border border-neutral-800/50 rounded-2xl p-6 card-shadow">
+            <h3 className="text-neutral-50 font-bold mb-4">Add a Reply</h3>
             <div className="space-y-4">
               <textarea
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 placeholder="Write your reply..."
                 rows={6}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-olive-500"
+                className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl text-neutral-50 placeholder-neutral-500 focus-ring focus:border-olive-500/50 transition-all duration-200 resize-none"
               />
               <button
                 onClick={handleCreateReply}
                 disabled={createReplyMutation.isPending || !replyContent.trim()}
-                className="px-6 py-3 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-3.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Send className="w-5 h-5" />
                 {createReplyMutation.isPending ? 'Posting...' : 'Post Reply'}
@@ -276,11 +281,11 @@ function ThreadDetail() {
             </div>
           </div>
         ) : (
-          <div className="bg-olive-500/10 border border-olive-500/50 rounded-lg p-6 text-center">
-            <p className="text-gray-300 mb-4">Please sign in to reply to this thread</p>
+          <div className="glass-effect border border-olive-500/30 rounded-2xl p-6 text-center bg-olive-500/10 card-shadow">
+            <p className="text-neutral-300 mb-4">Please sign in to reply to this thread</p>
             <Link
               to="/login"
-              className="inline-block px-6 py-2 bg-olive-500 hover:bg-olive-600 text-white font-semibold rounded-lg transition-colors"
+              className="inline-block px-6 py-2.5 bg-gradient-to-r from-olive-600 to-olive-500 hover:from-olive-500 hover:to-olive-400 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-olive-500/20 hover:shadow-xl hover:shadow-olive-500/30"
             >
               Sign In
             </Link>
